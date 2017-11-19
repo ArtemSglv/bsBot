@@ -37,6 +37,7 @@
             this.ClientSize = new System.Drawing.Size(369, 261);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "Settings";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Параметры";
             this.ResumeLayout(false);
 

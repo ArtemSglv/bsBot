@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Net;
+using Newtonsoft.Json;
 
 namespace bsBot
 {
@@ -16,7 +17,8 @@ namespace bsBot
         }
         public override void GetMarkets()
         {
-            throw new NotImplementedException();
+            string command = "info";
+            AvailableMarkets = JsonConvert.DeserializeObject<YobitInfo>(new WebClient().DownloadString(publicAPI + command)).pairs.Keys.ToList();
         }
 
         public override void GetPrice(string coin)

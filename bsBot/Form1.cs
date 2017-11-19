@@ -19,12 +19,12 @@ namespace bsBot
         }
 
         private void comboWithExchange_SelectedIndexChanged(object sender, EventArgs e)
-        {
+        {            
             // загрузка доступных маркетов в отдельном потоке
-            new Thread(delegate () {  }).Start();
+            new Thread(delegate () { Bot.currentExchange.GetMarkets(); }).Start();
 
-            // запуск формы настроек
-            new Settings().ShowDialog();
+            // запуск формы ввода ключей
+            new Keys().ShowDialog();
         }
 
         private void choiceExchange_Load(object sender, EventArgs e)

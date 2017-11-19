@@ -13,7 +13,7 @@ namespace bsBot
         public string tradeAPI { get; set; }
         public string Key { get; set; }
         public string Secret { get; set; }
-        public Dictionary<string,string> AvailableMarkets { get; set; }    
+        public List<string> AvailableMarkets { get; set; }    
 
         public Exchange() { }
 
