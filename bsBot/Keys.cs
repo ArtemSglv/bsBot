@@ -24,8 +24,14 @@ namespace bsBot
                 Bot.currentExchange.Key = textBoxKey.Text;
                 Bot.currentExchange.Secret = textBoxSecret.Text;
                 new Thread(delegate() { MessageBox.Show(Bot.GetInfo()); }).Start();
-                new Settings().ShowDialog();
+                new Settings().Show();
+                Close();
             }
+        }
+
+        private void Keys_Load(object sender, EventArgs e)
+        {
+            Focus();
         }
     }
 }

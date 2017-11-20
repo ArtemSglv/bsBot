@@ -24,7 +24,10 @@ namespace bsBot
             new Thread(delegate () { Bot.currentExchange.GetMarkets(); }).Start();
 
             // запуск формы ввода ключей
-            new Keys().ShowDialog();
+            new Keys().Show();
+
+            // close this form
+            //Close();
         }
 
         private void choiceExchange_Load(object sender, EventArgs e)

@@ -15,8 +15,11 @@ namespace bsBot
         public Settings()
         {
             InitializeComponent();
+        }        
+
+        private void Settings_Load(object sender, EventArgs e)
+        {
+            comboBoxMarkets.Items.AddRange(Bot.currentExchange.AvailableMarkets.ToArray());
         }
-
-
     }
 }

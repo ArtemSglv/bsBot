@@ -95,6 +95,7 @@
             this.Name = "Keys";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Ключи доступа";
+            this.Load += new System.EventHandler(this.Keys_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

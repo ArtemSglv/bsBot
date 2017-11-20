@@ -22,7 +22,7 @@ namespace bsBot
         public static string GetInfo()
         {
             string str = string.Empty;
-            string parameters = $"method=getInfo&nonce=" + (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+            string parameters = $"method=getInfo&pair=ltc_btc&nonce=" + (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
 
             string address = $"{currentExchange.tradeAPI}/";
 

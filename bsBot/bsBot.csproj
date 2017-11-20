@@ -51,11 +51,11 @@
     <Compile Include="Bot.cs" />
     <Compile Include="Exchange.cs" />
     <Compile Include="ExYobit.cs" />
-    <Compile Include="Form1.cs">
+    <Compile Include="choiceExchange.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="choiceExchange.Designer.cs">
+      <DependentUpon>choiceExchange.cs</DependentUpon>
     </Compile>
     <Compile Include="Keys.cs">
       <SubType>Form</SubType>
@@ -72,8 +72,8 @@
     <Compile Include="Settings.Designer.cs">
       <DependentUpon>Settings.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="choiceExchange.resx">
+      <DependentUpon>choiceExchange.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Keys.resx">
       <DependentUpon>Keys.cs</DependentUpon>
