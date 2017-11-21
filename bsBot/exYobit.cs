@@ -14,6 +14,7 @@ namespace bsBot
             Name = "Yobit";
             publicAPI = "https://yobit.net/api/3/";
             tradeAPI = "https://yobit.net/tapi/";
+            // secret: dd0009fd19e2531c93b8b16a62859071 key: 045F12F9CFB472607EACF75AC4CADFA1
         }
         public override void GetMarkets()
         {
@@ -21,14 +22,37 @@ namespace bsBot
             AvailableMarkets = JsonConvert.DeserializeObject<YobitInfo>(new WebClient().DownloadString(publicAPI + command)).pairs.Keys.ToList();
         }
 
-        public override void GetPrice(string coin)
+        public override void GetPrice(string market)
         {
-            throw new NotImplementedException();
+            string command = string.Empty;
+            string resp = string.Empty;
+            
+                command = "depth/"+market+"?limit=1";
+                resp = Engine.Request(publicAPI + command);
+                if (resp.Contains("INVALID_MARKET"))
+                {
+                    Price.Remove(pk);
+                    return;
+                }
+
+                Dictionary<string, double> dict = Engine.DeserializeToPriceBittrex(resp);
+                CurrentPrice pr;
+                if (dict != null)
+                {
+                    pr.ask = dict["Ask"];
+                    pr.bid = dict["Bid"];
+                    Price[pk] = pr;
+                }
+            
         }
 
-        public override void Trade(string type)
+        public override string Trade(string type)
         {
-            throw new NotImplementedException();
+            string message = string.Empty;
+
+
+
+            return message;
         }
     }
 }
