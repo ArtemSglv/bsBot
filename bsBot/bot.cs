@@ -6,19 +6,59 @@ using System.Net;
 
 namespace bsBot
 {
+    struct OrderLimit
+    {
+        public double min;
+        public double max;
+    }
+    struct TimeOut
+    {
+        public double min;
+        public double max;
+    }
+    enum TypeOrder
+    {
+        sell=1,
+        buy=0
+    }
+
     static class Bot
     {
         public static Exchange currentExchange= new ExYobit(); // временно
+        public static string currentMarket=string.Empty;
+        public static OrderLimit orderLimit= new OrderLimit();
+        public static TimeOut timeout=new TimeOut();
 
-        public static void Buy()
+        static void Buy()
         {
 
         }
 
-        public static void Sell()
+        static void Sell()
         {
 
         }
+
+        public static void StartTrade()
+        {
+
+        }
+
+        public static void StopTrade()
+        {
+
+        }
+
+        public static void GetMarkets()
+        {
+            currentExchange.GetMarkets();
+        }
+
+        public static void GetPrice()
+        {
+            currentExchange.GetPrice(currentMarket);
+        }
+
         public static string GetInfo()
         {
             string str = string.Empty;

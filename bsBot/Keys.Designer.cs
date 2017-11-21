@@ -50,14 +50,14 @@
             this.textBoxKey.Location = new System.Drawing.Point(16, 42);
             this.textBoxKey.Name = "textBoxKey";
             this.textBoxKey.Size = new System.Drawing.Size(302, 22);
-            this.textBoxKey.TabIndex = 1;
+            this.textBoxKey.TabIndex = 0;
             // 
             // textBoxSecret
             // 
             this.textBoxSecret.Location = new System.Drawing.Point(16, 97);
             this.textBoxSecret.Name = "textBoxSecret";
             this.textBoxSecret.Size = new System.Drawing.Size(302, 22);
-            this.textBoxSecret.TabIndex = 3;
+            this.textBoxSecret.TabIndex = 1;
             // 
             // labelSecret
             // 
@@ -75,7 +75,7 @@
             this.buttonNext.Location = new System.Drawing.Point(189, 125);
             this.buttonNext.Name = "buttonNext";
             this.buttonNext.Size = new System.Drawing.Size(129, 39);
-            this.buttonNext.TabIndex = 4;
+            this.buttonNext.TabIndex = 2;
             this.buttonNext.Text = "Продолжить";
             this.buttonNext.UseVisualStyleBackColor = true;
             this.buttonNext.Click += new System.EventHandler(this.buttonNext_Click);
