@@ -21,7 +21,9 @@ namespace bsBot
         private void comboWithExchange_SelectedIndexChanged(object sender, EventArgs e)
         {            
             // загрузка доступных маркетов в отдельном потоке
-            new Thread(delegate () { Bot.GetMarkets(); }).Start();
+            Thread trd =new Thread(delegate () { Bot.GetMarkets(); });
+            trd.Start();
+            trd.Join();
 
             // запуск формы ввода ключей
             new Keys().Show();

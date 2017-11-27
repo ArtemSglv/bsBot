@@ -42,6 +42,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.labelTimeout = new System.Windows.Forms.Label();
             this.textBoxMaxTimeout = new System.Windows.Forms.TextBox();
+            this.IsStartedLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // comboBoxMarkets
@@ -79,10 +80,11 @@
             this.butStop.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.butStop.Location = new System.Drawing.Point(12, 276);
             this.butStop.Name = "butStop";
-            this.butStop.Size = new System.Drawing.Size(124, 37);
+            this.butStop.Size = new System.Drawing.Size(137, 37);
             this.butStop.TabIndex = 6;
             this.butStop.Text = "Остановить";
             this.butStop.UseVisualStyleBackColor = true;
+            this.butStop.Click += new System.EventHandler(this.butStop_Click);
             // 
             // labelOrderLimit
             // 
@@ -161,9 +163,9 @@
             this.labelTimeout.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.labelTimeout.Location = new System.Drawing.Point(8, 141);
             this.labelTimeout.Name = "labelTimeout";
-            this.labelTimeout.Size = new System.Drawing.Size(224, 40);
+            this.labelTimeout.Size = new System.Drawing.Size(220, 40);
             this.labelTimeout.TabIndex = 9;
-            this.labelTimeout.Text = "Введите интервал\r\nмежду операциями (мин):";
+            this.labelTimeout.Text = "Введите интервал\r\nмежду операциями (сек):";
             // 
             // textBoxMaxTimeout
             // 
@@ -172,11 +174,23 @@
             this.textBoxMaxTimeout.Size = new System.Drawing.Size(38, 22);
             this.textBoxMaxTimeout.TabIndex = 4;
             // 
+            // IsStartedLabel
+            // 
+            this.IsStartedLabel.AutoSize = true;
+            this.IsStartedLabel.BackColor = System.Drawing.Color.IndianRed;
+            this.IsStartedLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.IsStartedLabel.Location = new System.Drawing.Point(246, 9);
+            this.IsStartedLabel.Name = "IsStartedLabel";
+            this.IsStartedLabel.Size = new System.Drawing.Size(111, 20);
+            this.IsStartedLabel.TabIndex = 12;
+            this.IsStartedLabel.Text = "Остановлен";
+            // 
             // Settings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(368, 324);
+            this.Controls.Add(this.IsStartedLabel);
             this.Controls.Add(this.textBoxMaxTimeout);
             this.Controls.Add(this.textBoxMinTimeout);
             this.Controls.Add(this.label1);
@@ -217,5 +231,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label labelTimeout;
         private System.Windows.Forms.TextBox textBoxMaxTimeout;
+        private System.Windows.Forms.Label IsStartedLabel;
     }
 }

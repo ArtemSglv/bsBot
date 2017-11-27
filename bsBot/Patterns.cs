@@ -21,6 +21,23 @@ namespace bsBot
             public double fee_seller { get; set; }
         }
         public long server_time { get; set; }
-        public Dictionary<string,pairInfo> pairs { get; set; }
+        public Dictionary<string, pairInfo> pairs { get; set; }
+    }
+    struct YobitPrice
+    {
+        public List<List<double>> asks { get; set; }
+        public List<List<double>> bids { get; set; }
+    }
+    struct YobitTradeInfo
+    {
+        public struct ReturnInfo
+        {
+            public double received { get; set; }
+            public double remains { get; set; }
+            public int order_id { get; set; }
+            public Dictionary<string, double> funds { get; set; }
+        }
+        public int success { get; set; }
+        public ReturnInfo returnInfo { get; set; }
     }
 }

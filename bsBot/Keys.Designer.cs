@@ -51,6 +51,7 @@
             this.textBoxKey.Name = "textBoxKey";
             this.textBoxKey.Size = new System.Drawing.Size(302, 22);
             this.textBoxKey.TabIndex = 0;
+            this.textBoxKey.Text = "045F12F9CFB472607EACF75AC4CADFA1";
             // 
             // textBoxSecret
             // 
@@ -58,6 +59,7 @@
             this.textBoxSecret.Name = "textBoxSecret";
             this.textBoxSecret.Size = new System.Drawing.Size(302, 22);
             this.textBoxSecret.TabIndex = 1;
+            this.textBoxSecret.Text = "dd0009fd19e2531c93b8b16a62859071";
             // 
             // labelSecret
             // 
