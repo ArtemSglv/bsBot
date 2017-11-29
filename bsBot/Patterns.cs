@@ -40,4 +40,43 @@ namespace bsBot
         public int success { get; set; }
         public ReturnInfo returnInfo { get; set; }
     }
+
+    struct CryptopiaInfo
+    {
+        public struct pairInfo
+        {
+            public int Id { get; set; }
+            public string Label { get; set; }
+            public string Currency { get; set; }
+            public string Symbol { get; set; }
+            public string BaseCurrency { get; set; }
+            public string BaseSymbol { get; set; }
+            public string Status { get; set; }
+            public object StatusMessage { get; set; }
+            public double TradeFee { get; set; }
+            public double MinimumTrade { get; set; }
+            public double MaximumTrade { get; set; }
+            public double MinimumBaseTrade { get; set; }
+            public double MaximumBaseTrade { get; set; }
+            public double MinimumPrice { get; set; }
+            public double MaximumPrice { get; set; }
+        }
+        public bool Success { get; set; }
+        public object Message { get; set; }
+        public List<pairInfo> pairs { get; set; }
+    }
+    struct CryptopiaPrice
+    {
+        public struct info
+        {
+            public int TradePairId { get; set; }
+            public string Label { get; set; }
+            public double Price { get; set; }
+            public double Volume { get; set; }
+            public double Total { get; set; }
+        }
+        
+        public info Buy { get; set; }
+        public info Sell { get; set; }
+    }
 }
