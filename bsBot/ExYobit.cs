@@ -12,7 +12,7 @@ namespace bsBot
     {
         public ExYobit()
         {
-            Name = "Yobit";
+            Name = "yobit.net";
             publicAPI = "https://yobit.net/api/3/";
             tradeAPI = "https://yobit.net/tapi/";
             min_rate = new Dictionary<string, double>();
@@ -23,7 +23,8 @@ namespace bsBot
             string command = "info";
             YobitInfo yInfo = JsonConvert.DeserializeObject<YobitInfo>(new WebClient().DownloadString(publicAPI + command));
             AvailableMarkets = yInfo.pairs.Keys.ToList();
-            yInfo.pairs.Keys.ToList().ForEach(k=> { min_rate[k] = yInfo.pairs[k].min_price; });
+            AvailableMarkets.Sort();
+            yInfo.pairs.Keys.ToList().ForEach(k => { min_rate[k] = yInfo.pairs[k].min_price; });
         }
 
         public override void GetPrice(string market)
@@ -40,14 +41,14 @@ namespace bsBot
 
             //resp=resp.Replace("[[", "[");
             //resp=resp.Replace("]]", "]");
-            resp=resp.Remove(0, resp.IndexOf(":") + 1);
-            resp=resp.Remove(resp.Length-1,1);
-                
+            resp = resp.Remove(0, resp.IndexOf(":") + 1);
+            resp = resp.Remove(resp.Length - 1, 1);
+
             YobitPrice pr = JsonConvert.DeserializeObject<YobitPrice>(resp);
 
-            if (!pr.Equals(null))
+            if (pr.bids.Count > 0 && pr.asks.Count > 0 && pr.bids[0].Count > 0 && pr.asks[0].Count > 0)
             {
-                Price p=new Price();
+                Price p = new Price();
                 p.ask = pr.asks[0][0];
                 p.bid = pr.bids[0][0];
                 price = p;
@@ -55,20 +56,22 @@ namespace bsBot
 
         }
 
-        public override string Trade(TypeOrder type, string pair,double rate,double amount)
+        public override string Trade(TypeOrder type, string pair, double rate, double amount)
         {
             string parameters = $"method=Trade&pair=" + pair +
-                "&type="+type.ToString()+"&rate="+rate.ToString(CultureInfo.InvariantCulture)+"&amount="+amount+
+                "&type=" + type.ToString() + "&rate=" + rate.ToString("F8", CultureInfo.InvariantCulture) + "&amount=" + amount +
                 "&nonce=" + (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
             string resp = Response(parameters);
-            if(resp.Contains("error"))
+            if (resp.Contains("error"))
             {
-                return DateTime.UtcNow.ToString("dd/MM/yy HH:mm:ss.ffff") + " "+resp +"\n\r";
+                return DateTime.UtcNow.ToString("dd/MM/yy HH:mm:ss.ffff") + " " + resp + "\n\r";
             }
             YobitTradeInfo info = JsonConvert.DeserializeObject<YobitTradeInfo>(resp);
 
-            return DateTime.UtcNow.ToString("dd/MM/yy HH:mm:ss.ffff") +" Order Type: "+type.ToString()+" Order ID: "+info.returnInfo.order_id
-                +" Received: "+info.returnInfo.received+" Remains: "+info.returnInfo.remains+"\n\r";
+            //return DateTime.UtcNow.ToString("dd/MM/yy HH:mm:ss.ffff") +" Order Type: "+type.ToString()+" Order ID: "+info.returnInfo.order_id
+            //    +" Received: "+info.returnInfo.received+" Remains: "+info.returnInfo.remains+"\n\r";
+
+            return DateTime.UtcNow.ToString("dd/MM/yy HH:mm:ss.ffff") + resp + "\n\r";
         }
 
         public override string GetInfo(string pair)
@@ -77,7 +80,7 @@ namespace bsBot
             return Response(parameters);
         }
 
-        protected  string Response(string parameters) // return JSON response
+        protected string Response(string parameters) // return JSON response
         {
             string jsonResponse = string.Empty;
 

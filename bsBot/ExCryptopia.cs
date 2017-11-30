@@ -17,22 +17,25 @@ namespace bsBot
     {
         public ExCryptopia()
         {
-            Name = "Cryptopia";
+            Name = "cryptopia.co.nz";
             publicAPI = "https://www.cryptopia.co.nz/Api/";
             tradeAPI = "https://www.cryptopia.co.nz/Api/";
             min_rate = new Dictionary<string, double>();
         }
         public override string GetInfo(string pair)
         {
-            string parameters = $"pair=" + pair + "&nonce=" + (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
-            return Response("GetBalance",parameters);
+            string parameters = $"Currency=" + pair + "&nonce=" + (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+            //return Response("GetBalance",parameters);
+            Foo("GetBalance", "ETH"); //pair.Remove(pair.IndexOf("_"),pair.Length-pair.IndexOf("_")).ToUpper()
+            return "";
         }
 
         public override void GetMarkets()
         {
             string command = "GetTradePairs";
             CryptopiaInfo cInfo = JsonConvert.DeserializeObject<CryptopiaInfo>(new WebClient().DownloadString(publicAPI + command));
-            cInfo.pairs.ForEach(p =>
+            AvailableMarkets = new List<string>();
+            cInfo.Data.ForEach(p =>
             {
                 AvailableMarkets.Add(p.Label.Replace("/", "_"));
                 min_rate[AvailableMarkets.Last()] = p.MinimumPrice;
@@ -71,11 +74,11 @@ namespace bsBot
             throw new NotImplementedException();
         }
 
-        protected string Response(string method,string parameters)
+        protected string Response(string method, string parameters)
         {
             string jsonResponse = string.Empty;
 
-            string address = $"{tradeAPI}/"+method+"/";
+            string address = $"{tradeAPI}/" + method + "/";
 
             var keyByte = Encoding.UTF8.GetBytes(Secret);
 
@@ -118,17 +121,17 @@ namespace bsBot
             }
             return jsonResponse;
         }
-         async void Foo(string method)
+        async void Foo(string method, string cur)
         {
             var postData = new
             {
-                Currency = "DOT"
+                Currency = cur
             };
 
             // Create Request
             var request = new HttpRequestMessage();
             request.Method = HttpMethod.Post;
-            request.RequestUri = new Uri(tradeAPI+method);
+            request.RequestUri = new Uri(tradeAPI + method);
             request.Content = new ObjectContent(typeof(object), postData, new JsonMediaTypeFormatter());
 
             // Authentication
@@ -138,15 +141,15 @@ namespace bsBot
                 // Hash content to ensure message integrity
                 using (var md5 = MD5.Create())
                 {
-                    requestContentBase64String = Convert.ToBase64String(md5.ComputeHash( await request.Content.ReadAsByteArrayAsync()));
+                    requestContentBase64String = Convert.ToBase64String(md5.ComputeHash(await request.Content.ReadAsByteArrayAsync()));
                 }
             }
 
             //create random nonce for each request
-            var nonce = Guid.NewGuid().ToString("N");
+            var nonce = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds; //Guid.NewGuid().ToString("N");
 
             //Creating the raw signature string
-            var signature = Encoding.UTF8.GetBytes(string.Concat(Key, HttpMethod.Post, request.RequestUri.AbsoluteUri.ToLower(), nonce, requestContentBase64String));
+            var signature = Encoding.UTF8.GetBytes(string.Concat(Key, HttpMethod.Post, WebUtility.UrlEncode(request.RequestUri.AbsoluteUri.ToLower()), nonce, requestContentBase64String));
             using (var hmac = new HMACSHA256(Convert.FromBase64String(Secret)))
             {
                 request.Headers.Authorization = new AuthenticationHeaderValue("amx", string.Format("{0}:{1}:{2}", Key, Convert.ToBase64String(hmac.ComputeHash(signature)), nonce));
@@ -159,8 +162,8 @@ namespace bsBot
                 var response = await client.SendAsync(request);
                 if (response.IsSuccessStatusCode)
                 {
-                    var str = await response.Content.ReadAsStringAsync();              
-                    
+                    var str = await response.Content.ReadAsStringAsync();
+
                 }
             }
         }

@@ -20,6 +20,12 @@ namespace bsBot
 
         private void comboWithExchange_SelectedIndexChanged(object sender, EventArgs e)
         {            
+            switch (comboWithExchange.SelectedItem.ToString())
+            {
+                case "yobit.net": { Bot.currentExchange = new ExYobit(); break; }
+                case "cryptopia.co.nz": { Bot.currentExchange = new ExCryptopia(); break; }
+                //case "yobit.net": { Bot.currentExchange = new ExYobit(); break; }
+            }
             // загрузка доступных маркетов в отдельном потоке
             Thread trd =new Thread(delegate () { Bot.GetMarkets(); });
             trd.Start();

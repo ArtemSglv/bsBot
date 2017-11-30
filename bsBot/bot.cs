@@ -25,7 +25,7 @@ namespace bsBot
 
     static class Bot
     {
-        public static Exchange currentExchange = new ExYobit(); // временно
+        public static Exchange currentExchange; // = new ExYobit(); // временно
         public static string currentMarket = string.Empty;
         public static OrderLimit orderLimit = new OrderLimit();
         public static TimeOut timeout = new TimeOut();
@@ -90,7 +90,7 @@ namespace bsBot
         public static void StartTrade()
         {
             IsStarted = true;
-            threadTrade = new Thread(delegate () {  Trade();  });
+            threadTrade = new Thread(delegate () { Trade();   });
             threadTrade.Start();
             log = new Log();
             log.Show();
@@ -99,13 +99,13 @@ namespace bsBot
         public static void StopTrade()
         {
             IsStarted = false;
-            //threadTrade.Interrupt();
+
             threadTrade.Join();
             sw.Close();
             fs.Close();
             log.Close();
 
-            
+
         }
 
         public static void GetMarkets()

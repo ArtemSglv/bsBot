@@ -23,7 +23,7 @@ namespace bsBot
             {
                 Bot.currentExchange.Key = textBoxKey.Text;
                 Bot.currentExchange.Secret = textBoxSecret.Text;
-                // new Thread(delegate() { MessageBox.Show(Bot.GetInfo()); }).Start();
+                new Thread(delegate() { MessageBox.Show(Bot.GetInfo()); }).Start();
                 new Settings().Show();
                 Close();
             }

@@ -63,7 +63,7 @@ namespace bsBot
         }
         public bool Success { get; set; }
         public object Message { get; set; }
-        public List<pairInfo> pairs { get; set; }
+        public List<pairInfo> Data { get; set; }
     }
     struct CryptopiaPrice
     {
