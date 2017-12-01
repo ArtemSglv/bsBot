@@ -34,7 +34,7 @@ namespace bsBot
         {
             public double received { get; set; }
             public double remains { get; set; }
-            public int order_id { get; set; }
+            public long order_id { get; set; }
             public Dictionary<string, double> funds { get; set; }
         }
         public int success { get; set; }

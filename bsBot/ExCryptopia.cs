@@ -69,7 +69,7 @@ namespace bsBot
             }
         }
 
-        public override string Trade(TypeOrder type, string pair, double rate, double amount)
+        public override string Trade(TypeOrder type, string pair, double rate, double amount,int nonce)
         {
             throw new NotImplementedException();
         }

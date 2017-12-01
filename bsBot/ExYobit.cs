@@ -16,7 +16,6 @@ namespace bsBot
             publicAPI = "https://yobit.net/api/3/";
             tradeAPI = "https://yobit.net/tapi/";
             min_rate = new Dictionary<string, double>();
-            // secret: dd0009fd19e2531c93b8b16a62859071 key: 045F12F9CFB472607EACF75AC4CADFA1
         }
         public override void GetMarkets()
         {
@@ -46,7 +45,7 @@ namespace bsBot
 
             YobitPrice pr = JsonConvert.DeserializeObject<YobitPrice>(resp);
 
-            if (pr.bids.Count > 0 && pr.asks.Count > 0 && pr.bids[0].Count > 0 && pr.asks[0].Count > 0)
+            if (pr.bids != null && pr.asks!=null&& pr.bids.Count > 0 && pr.asks.Count > 0 && pr.bids[0].Count > 0 && pr.asks[0].Count > 0)
             {
                 Price p = new Price();
                 p.ask = pr.asks[0][0];
@@ -56,22 +55,25 @@ namespace bsBot
 
         }
 
-        public override string Trade(TypeOrder type, string pair, double rate, double amount)
+        public override string Trade(TypeOrder type, string pair, double rate, double amount,int nonce)
         {
             string parameters = $"method=Trade&pair=" + pair +
-                "&type=" + type.ToString() + "&rate=" + rate.ToString("F8", CultureInfo.InvariantCulture) + "&amount=" + amount +
-                "&nonce=" + (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+                "&type=" + type.ToString() + "&rate=" + rate.ToString("F8", CultureInfo.InvariantCulture) + "&amount=" +
+                amount.ToString("F8", CultureInfo.InvariantCulture) +
+                "&nonce=" + nonce /*(int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds*/;
+            
             string resp = Response(parameters);
             if (resp.Contains("error"))
             {
                 return DateTime.UtcNow.ToString("dd/MM/yy HH:mm:ss.ffff") + " " + resp + "\n\r";
             }
+            resp = resp.Replace("return","returnInfo");
             YobitTradeInfo info = JsonConvert.DeserializeObject<YobitTradeInfo>(resp);
 
-            //return DateTime.UtcNow.ToString("dd/MM/yy HH:mm:ss.ffff") +" Order Type: "+type.ToString()+" Order ID: "+info.returnInfo.order_id
-            //    +" Received: "+info.returnInfo.received+" Remains: "+info.returnInfo.remains+"\n\r";
+            return DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff") +" Order Type: "+type.ToString()+" Order ID: "+info.returnInfo.order_id
+                +" Price: "+rate.ToString("F8",CultureInfo.InvariantCulture)+" Received: "+info.returnInfo.received+" Remains: "+info.returnInfo.remains+"\n\r";
 
-            return DateTime.UtcNow.ToString("dd/MM/yy HH:mm:ss.ffff") + resp + "\n\r";
+            //return DateTime.UtcNow.ToString("dd/MM/yy HH:mm:ss.ffff") + resp + "\n\r";
         }
 
         public override string GetInfo(string pair)

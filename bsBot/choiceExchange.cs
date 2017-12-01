@@ -15,19 +15,27 @@ namespace bsBot
     {
         public choiceExchange()
         {
-            InitializeComponent();            
+            InitializeComponent();
         }
 
         private void comboWithExchange_SelectedIndexChanged(object sender, EventArgs e)
-        {            
+        {
             switch (comboWithExchange.SelectedItem.ToString())
             {
                 case "yobit.net": { Bot.currentExchange = new ExYobit(); break; }
                 case "cryptopia.co.nz": { Bot.currentExchange = new ExCryptopia(); break; }
-                //case "yobit.net": { Bot.currentExchange = new ExYobit(); break; }
+                    //case "yobit.net": { Bot.currentExchange = new ExYobit(); break; }
             }
             // загрузка доступных маркетов в отдельном потоке
-            Thread trd =new Thread(delegate () { Bot.GetMarkets(); });
+            Thread trd = new Thread(delegate ()
+            {
+                try { Bot.GetMarkets(); }
+                catch (System.Net.WebException ex)
+                {
+                    MessageBox.Show(ex.Message + "\n" + "Проверьте подключение к Интернету");                    
+                    Application.Exit();
+                }
+            });
             trd.Start();
             trd.Join();
 
@@ -40,7 +48,7 @@ namespace bsBot
 
         private void choiceExchange_Load(object sender, EventArgs e)
         {
-            comboWithExchange.Items.AddRange(new[] { "yobit.net", "cryptopia.co.nz", "coinexchange.io" });
+            comboWithExchange.Items.AddRange(new[] { "yobit.net"/*, "cryptopia.co.nz", "coinexchange.io"*/ });
             Focus();
         }
     }

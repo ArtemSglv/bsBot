@@ -32,7 +32,7 @@ namespace bsBot
 
         public abstract void GetMarkets();
         public abstract void GetPrice(string coin);
-        public abstract string Trade(TypeOrder type,string pair, double rate, double amount); // buy or sell
+        public abstract string Trade(TypeOrder type,string pair, double rate, double amount,int nonce); // buy or sell
         public abstract string GetInfo(string pair);
         //protected abstract string Response(string parameters);       
 

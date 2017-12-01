@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.IO;
+using System.Configuration;
 
 namespace bsBot
 {
     struct OrderLimit
     {
-        public int min;
-        public int max;
+        public double min;
+        public double max;
     }
     struct TimeOut
     {
@@ -41,25 +42,42 @@ namespace bsBot
 
         static void Buy(double price, double amount) // bid + min_rate
         {
-            string str = currentExchange.Trade(TypeOrder.buy, currentMarket, price, amount);
+            string str = currentExchange.Trade(TypeOrder.buy, currentMarket, price, amount, GetNonce());
             sw.Write(str);
             log.Invoke(new Action(() => { log.printLog(str); }));
         }
 
         static void Sell(double price, double amount) // ask - min_rate
         {
-            string str = currentExchange.Trade(TypeOrder.sell, currentMarket, price, amount);
+            string str = currentExchange.Trade(TypeOrder.sell, currentMarket, price, amount, GetNonce());
             sw.Write(str);
-            log.Invoke(new Action(()=> { log.printLog(str); }));
+            log.Invoke(new Action(() => { log.printLog(str); }));
         }
-
+        private static void ChangeConfig()
+        {
+            var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            config.AppSettings.Settings["nonce"].Value = (int.Parse(config.AppSettings.Settings["nonce"].Value) + 1).ToString();
+            config.Save();
+            ConfigurationManager.RefreshSection("appSettings");
+        }
+        private static int GetNonce()
+        {
+            int nonce = int.Parse(ConfigurationManager.AppSettings["nonce"]);
+            ChangeConfig();
+            return nonce;
+        }
+        private static double GetRandomNumber(double minimum, double maximum)
+        {
+            return rnd.NextDouble() * (maximum - minimum) + minimum;
+        }
         static void Trade()
         {
-            fs = new FileStream("log.txt", FileMode.OpenOrCreate);
-            sw = new StreamWriter(fs);
-
             do
             {
+                fs = new FileStream("log.txt", FileMode.OpenOrCreate);
+                fs.Seek(fs.Length, SeekOrigin.Current);
+                sw = new StreamWriter(fs);
+
                 GetPrice();
                 if (currentExchange.price.diff() > currentExchange.min_rate[currentMarket])
                 {
@@ -68,7 +86,7 @@ namespace bsBot
                         case 0:
                             {
                                 price = currentExchange.price.bid + currentExchange.min_rate[currentMarket];
-                                amount = Convert.ToDouble(rnd.Next(orderLimit.min, orderLimit.max + 1));
+                                amount = GetRandomNumber(orderLimit.min, orderLimit.max + 1);
                                 Buy(price, amount);
                                 Sell(price, amount);
                                 break;
@@ -76,36 +94,34 @@ namespace bsBot
                         case 1:
                             {
                                 price = currentExchange.price.ask - currentExchange.min_rate[currentMarket];
-                                amount = Convert.ToDouble(rnd.Next(orderLimit.min, orderLimit.max + 1));
+                                amount = GetRandomNumber(orderLimit.min, orderLimit.max + 1);
                                 Sell(price, amount);
                                 Buy(price, amount);
                                 break;
                             }
                     }
                 }
+                sw.Close();
+                fs.Close();
                 Thread.Sleep(rnd.Next(timeout.min, timeout.max + 1));
             } while (IsStarted);
+
         }
 
         public static void StartTrade()
         {
             IsStarted = true;
-            threadTrade = new Thread(delegate () { Trade();   });
+            threadTrade = new Thread(delegate () { Trade(); });
             threadTrade.Start();
             log = new Log();
             log.Show();
+
         }
 
         public static void StopTrade()
         {
             IsStarted = false;
-
-            threadTrade.Join();
-            sw.Close();
-            fs.Close();
             log.Close();
-
-
         }
 
         public static void GetMarkets()

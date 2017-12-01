@@ -5,7 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading;
+using System.Globalization;
 using System.Windows.Forms;
 
 namespace bsBot
@@ -28,8 +28,8 @@ namespace bsBot
             {
                 Bot.currentMarket = comboBoxMarkets.SelectedItem.ToString();
 
-                Bot.orderLimit.min = int.Parse(textBoxMinOrder.Text);
-                Bot.orderLimit.max = int.Parse(textBoxMaxOrder.Text);
+                Bot.orderLimit.min = double.Parse(textBoxMinOrder.Text.Replace(",","."),CultureInfo.InvariantCulture);
+                Bot.orderLimit.max = double.Parse(textBoxMaxOrder.Text.Replace(",", "."), CultureInfo.InvariantCulture);
 
                 Bot.timeout.min = int.Parse(textBoxMinTimeout.Text)*1000;
                 Bot.timeout.max = int.Parse(textBoxMaxTimeout.Text)*1000;
@@ -43,9 +43,9 @@ namespace bsBot
 
         private void butStop_Click(object sender, EventArgs e)
         {
-            Bot.StopTrade();
             IsStartedLabel.BackColor = Color.IndianRed;
             IsStartedLabel.Text = "Остановлен";
+            Bot.StopTrade();
         }
     }
 }

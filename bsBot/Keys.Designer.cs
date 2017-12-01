@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Keys));
             this.labelKey = new System.Windows.Forms.Label();
             this.textBoxKey = new System.Windows.Forms.TextBox();
             this.textBoxSecret = new System.Windows.Forms.TextBox();
@@ -51,7 +52,6 @@
             this.textBoxKey.Name = "textBoxKey";
             this.textBoxKey.Size = new System.Drawing.Size(302, 22);
             this.textBoxKey.TabIndex = 0;
-            this.textBoxKey.Text = "045F12F9CFB472607EACF75AC4CADFA1";
             // 
             // textBoxSecret
             // 
@@ -59,7 +59,6 @@
             this.textBoxSecret.Name = "textBoxSecret";
             this.textBoxSecret.Size = new System.Drawing.Size(302, 22);
             this.textBoxSecret.TabIndex = 1;
-            this.textBoxSecret.Text = "dd0009fd19e2531c93b8b16a62859071";
             // 
             // labelSecret
             // 
@@ -93,6 +92,7 @@
             this.Controls.Add(this.textBoxKey);
             this.Controls.Add(this.labelKey);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Keys";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
