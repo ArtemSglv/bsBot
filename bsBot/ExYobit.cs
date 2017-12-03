@@ -16,6 +16,7 @@ namespace bsBot
             publicAPI = "https://yobit.net/api/3/";
             tradeAPI = "https://yobit.net/tapi/";
             min_rate = new Dictionary<string, double>();
+            //key 8FB2D862C2FAAAA6259CFA79D5F15649 secret a3b9830e85af2ab6ccbcb25233785e75
         }
         public override void GetMarkets()
         {
@@ -45,7 +46,7 @@ namespace bsBot
 
             YobitPrice pr = JsonConvert.DeserializeObject<YobitPrice>(resp);
 
-            if (pr.bids != null && pr.asks!=null&& pr.bids.Count > 0 && pr.asks.Count > 0 && pr.bids[0].Count > 0 && pr.asks[0].Count > 0)
+            if (pr.bids != null && pr.asks != null && pr.bids.Count > 0 && pr.asks.Count > 0 && pr.bids[0].Count > 0 && pr.asks[0].Count > 0)
             {
                 Price p = new Price();
                 p.ask = pr.asks[0][0];
@@ -55,31 +56,39 @@ namespace bsBot
 
         }
 
-        public override string Trade(TypeOrder type, string pair, double rate, double amount,int nonce)
+        public override string Trade(TypeOrder type, string pair, double rate, double amount, int nonce)
         {
             string parameters = $"method=Trade&pair=" + pair +
                 "&type=" + type.ToString() + "&rate=" + rate.ToString("F8", CultureInfo.InvariantCulture) + "&amount=" +
                 amount.ToString("F8", CultureInfo.InvariantCulture) +
                 "&nonce=" + nonce /*(int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds*/;
-            
+
             string resp = Response(parameters);
             if (resp.Contains("error"))
             {
-                return DateTime.UtcNow.ToString("dd/MM/yy HH:mm:ss.ffff") + " " + resp + "\n\r";
+                return DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff") + " " + resp + "\n";
             }
-            resp = resp.Replace("return","returnInfo");
+            resp = resp.Replace("return", "returnInfo");
             YobitTradeInfo info = JsonConvert.DeserializeObject<YobitTradeInfo>(resp);
+            curBalance = info.returnInfo.funds_incl_orders;
 
-            return DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff") +" Order Type: "+type.ToString()+" Order ID: "+info.returnInfo.order_id
-                +" Price: "+rate.ToString("F8",CultureInfo.InvariantCulture)+" Received: "+info.returnInfo.received+" Remains: "+info.returnInfo.remains+"\n\r";
+            return DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff") + " Order Type: " + type.ToString() + " Order ID: " + info.returnInfo.order_id
+                + " Price: " + rate.ToString("F8", CultureInfo.InvariantCulture) + " Received: " + info.returnInfo.received + " Remains: " + info.returnInfo.remains + "\n";
 
             //return DateTime.UtcNow.ToString("dd/MM/yy HH:mm:ss.ffff") + resp + "\n\r";
         }
 
-        public override string GetInfo(string pair)
+        public override string GetInfo(string pair, int nonce)
         {
-            string parameters = $"method=getInfo&pair=" + pair + "&nonce=" + (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
-            return Response(parameters);
+            string parameters = $"method=getInfo&nonce=" + nonce;
+            string resp = Response(parameters);
+
+            resp = resp.Replace("return", "returnInfo");
+
+            YobitAccountInfo yAccInfo= JsonConvert.DeserializeObject<YobitAccountInfo>(resp);
+            startBalance = yAccInfo.returnInfo.funds;
+
+            return "";
         }
 
         protected string Response(string parameters) // return JSON response

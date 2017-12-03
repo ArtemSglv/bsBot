@@ -21,12 +21,13 @@ namespace bsBot
             publicAPI = "https://www.cryptopia.co.nz/Api/";
             tradeAPI = "https://www.cryptopia.co.nz/Api/";
             min_rate = new Dictionary<string, double>();
+            //key abae36b2f2954405aea5505b99b4c000 secret dgWT333d6TfRslCO4BlYow7xq9ytW7zV/Xd3xniAc1w=
         }
-        public override string GetInfo(string pair)
+        public override string GetInfo(string pair,int nonce)
         {
             string parameters = $"Currency=" + pair + "&nonce=" + (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
             //return Response("GetBalance",parameters);
-            Foo("GetBalance", "ETH"); //pair.Remove(pair.IndexOf("_"),pair.Length-pair.IndexOf("_")).ToUpper()
+            Foo("GetBalance", "ETH",nonce); //pair.Remove(pair.IndexOf("_"),pair.Length-pair.IndexOf("_")).ToUpper()
             return "";
         }
 
@@ -121,7 +122,7 @@ namespace bsBot
             }
             return jsonResponse;
         }
-        async void Foo(string method, string cur)
+        async void Foo(string method, string cur,int nonce)
         {
             var postData = new
             {
@@ -146,7 +147,7 @@ namespace bsBot
             }
 
             //create random nonce for each request
-            var nonce = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds; //Guid.NewGuid().ToString("N");
+           // var nonce = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds; //Guid.NewGuid().ToString("N");
 
             //Creating the raw signature string
             var signature = Encoding.UTF8.GetBytes(string.Concat(Key, HttpMethod.Post, WebUtility.UrlEncode(request.RequestUri.AbsoluteUri.ToLower()), nonce, requestContentBase64String));

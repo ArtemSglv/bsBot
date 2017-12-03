@@ -36,6 +36,19 @@ namespace bsBot
             public double remains { get; set; }
             public long order_id { get; set; }
             public Dictionary<string, double> funds { get; set; }
+            public Dictionary<string, double> funds_incl_orders { get; set; }
+        }
+        public int success { get; set; }
+        public ReturnInfo returnInfo { get; set; }
+    }
+    
+    struct YobitAccountInfo
+    {
+        public struct ReturnInfo
+        {
+            public int open_orders { get; set; }
+            public Dictionary<string, double> funds { get; set; }
+            public Dictionary<string, double> funds_incl_orders { get; set; }
         }
         public int success { get; set; }
         public ReturnInfo returnInfo { get; set; }

@@ -27,13 +27,15 @@ namespace bsBot
         public List<string> AvailableMarkets { get; set; }
         public Price price { get; set; }
         public Dictionary<string,double> min_rate { get; set; }
+        public Dictionary<string, double> startBalance { get; set; }
+        public Dictionary<string, double> curBalance { get; set; }
 
         public Exchange() { }
 
         public abstract void GetMarkets();
         public abstract void GetPrice(string coin);
         public abstract string Trade(TypeOrder type,string pair, double rate, double amount,int nonce); // buy or sell
-        public abstract string GetInfo(string pair);
+        public abstract string GetInfo(string pair,int nonce);
         //protected abstract string Response(string parameters);       
 
     }

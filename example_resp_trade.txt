@@ -1,0 +1,25 @@
+"{
+"success":1,
+"returnInfo":{
+	"received":0,
+	"remains":41000.43443711,
+	"order_id":205549323049639,
+	"funds":{
+		"storj":0,
+		"pwr":450244.40394937,
+		"rur":200.21274285
+	},
+	"funds_incl_orders":{
+		"storj":0,
+		"pwr":491244.83838648,
+		"rur":200.21274285
+	},
+	"server_time":1512302381
+		}
+}"
+
+buy:
+"{\"success\":1,\"returnInfo\":{\"received\":0,\"remains\":43993.52832815,\"order_id\":105549323055383,\"funds\":{\"storj\":0,\"pwr\":491244.83838648,\"rur\":198.96770904},\"funds_incl_orders\":{\"storj\":0,\"pwr\":491244.83838648,\"rur\":200.20684043},\"server_time\":1512302661}}"
+
+sell:
+"{\"success\":1,\"returnInfo\":{\"received\":0,\"remains\":43993.52832815,\"order_id\":205549323055824,\"funds\":{\"storj\":0,\"pwr\":447251.31005833,\"rur\":198.96770904},\"funds_incl_orders\":{\"storj\":0,\"pwr\":491244.83838648,\"rur\":200.20684043},\"server_time\":1512302682}}"
