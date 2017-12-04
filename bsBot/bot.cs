@@ -113,12 +113,14 @@ namespace bsBot
 
                     // if balance is not norm then stop trade
                     var coin = GetCoin(currentMarket);
-                    if (currentExchange.startBalance[coin] != currentExchange.curBalance[coin])
+                    if (currentExchange.startBalance != null && currentExchange.curBalance != null && 
+                        (currentExchange.startBalance[coin] != currentExchange.curBalance[coin]))
                     {
                         var s = "Стартовый баланс: " + currentExchange.startBalance[coin] + " Текущий баланс: " +
                             currentExchange.curBalance[coin] +
                             "\nПокупка/продажа не у себя повлекла изменение баланса. Торговля остановлена\n";
-                        log.Invoke(new Action(() => {
+                        log.Invoke(new Action(() =>
+                        {
                             log.printLog(s);
                         }));
                         sw.Write(s);
@@ -127,8 +129,8 @@ namespace bsBot
                         fs.Close();
                         break;
                     }
-                }           
-                
+                }
+
                 sw.Close();
                 fs.Close();
                 Thread.Sleep(rnd.Next(timeout.min, timeout.max + 1));
@@ -164,7 +166,7 @@ namespace bsBot
 
         public static string GetInfo()
         {
-            return currentExchange.GetInfo(currentMarket,GetNonce());
+            return currentExchange.GetInfo(currentMarket, GetNonce());
         }
     }
 }
