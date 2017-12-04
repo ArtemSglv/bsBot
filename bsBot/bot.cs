@@ -54,6 +54,7 @@ namespace bsBot
             sw.Write(str);
             log.Invoke(new Action(() => { log.printLog(str); }));
         }
+
         private static void ChangeConfig()
         {
             var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
@@ -77,6 +78,7 @@ namespace bsBot
             Regex r = new Regex(pattern);
             return r.Match(market).Value;
         }
+
         static void Trade()
         {
             do
@@ -108,31 +110,24 @@ namespace bsBot
                                 break;
                             }
                     }
-                }
 
-                var toLog = "ask: " + currentExchange.price.ask + " bid: " +
-                        currentExchange.price.bid + " min_price: " + currentExchange.min_rate[currentMarket] + "\n";
-                log.Invoke(new Action(() => {
-                    log.printLog(toLog);
-                }));
-                sw.Write(toLog);
+                    // if balance is not norm then stop trade
+                    var coin = GetCoin(currentMarket);
+                    if (currentExchange.startBalance[coin] != currentExchange.curBalance[coin])
+                    {
+                        var s = "Стартовый баланс: " + currentExchange.startBalance[coin] + " Текущий баланс: " +
+                            currentExchange.curBalance[coin] +
+                            "\nПокупка/продажа не у себя повлекла изменение баланса. Торговля остановлена\n";
+                        log.Invoke(new Action(() => {
+                            log.printLog(s);
+                        }));
+                        sw.Write(s);
 
-                // if balance is not norm then stop trade
-                var coin = GetCoin(currentMarket);
-                if (currentExchange.startBalance[coin] != currentExchange.curBalance[coin])
-                {
-                    var s = "Стартовый баланс: "+currentExchange.startBalance[coin] +" Текущий баланс: "+
-                        currentExchange.curBalance[coin] +
-                        "\nПокупка/продажа не у себя повлекла изменение баланса. Торговля остановлена\n";
-                    log.Invoke(new Action(() => {
-                        log.printLog(s);
-                    }));
-                    sw.Write(s);
-
-                    sw.Close();
-                    fs.Close();
-                    break;
-                }
+                        sw.Close();
+                        fs.Close();
+                        break;
+                    }
+                }           
                 
                 sw.Close();
                 fs.Close();
