@@ -15,7 +15,7 @@ namespace bsBot
             public double bid;
             public double diff()
             {
-                return Math.Abs(ask - bid);
+                return Math.Round(Math.Abs(ask - bid),8);
             }
         }
 
