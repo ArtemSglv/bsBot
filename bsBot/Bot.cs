@@ -110,32 +110,27 @@ namespace bsBot
                                 break;
                             }
                     }
+
+                    // if balance is not norm then stop trade
+                    var coin = GetCoin(currentMarket);
+                    if (currentExchange.startBalance != null && currentExchange.curBalance != null && 
+                        (currentExchange.startBalance[coin] != currentExchange.curBalance[coin]))
+                    {
+                        var s = "Стартовый баланс: " + currentExchange.startBalance[coin] + " Текущий баланс: " +
+                            currentExchange.curBalance[coin] +
+                            "\nПокупка/продажа не у себя повлекла изменение баланса. Торговля остановлена\n";
+                        log.Invoke(new Action(() =>
+                        {
+                            log.printLog(s);
+                        }));
+                        sw.Write(s);
+
+                        sw.Close();
+                        fs.Close();
+                        break;
+                    }
                 }
 
-                var toLog = "ask: " + currentExchange.price.ask + " bid: " +
-                        currentExchange.price.bid + " min_price: " + currentExchange.min_rate[currentMarket] + "\n";
-                log.Invoke(new Action(() => {
-                    log.printLog(toLog);
-                }));
-                sw.Write(toLog);
-
-                // if balance is not norm then stop trade
-                var coin = GetCoin(currentMarket);
-                if (currentExchange.startBalance[coin] != currentExchange.curBalance[coin])
-                {
-                    var s = "Стартовый баланс: "+currentExchange.startBalance[coin] +" Текущий баланс: "+
-                        currentExchange.curBalance[coin] +
-                        "\nПокупка/продажа не у себя повлекла изменение баланса. Торговля остановлена\n";
-                    log.Invoke(new Action(() => {
-                        log.printLog(s);
-                    }));
-                    sw.Write(s);
-
-                    sw.Close();
-                    fs.Close();
-                    break;
-                }
-                
                 sw.Close();
                 fs.Close();
                 Thread.Sleep(rnd.Next(timeout.min, timeout.max + 1));
@@ -171,7 +166,7 @@ namespace bsBot
 
         public static string GetInfo()
         {
-            return currentExchange.GetInfo(currentMarket,GetNonce());
+            return currentExchange.GetInfo(currentMarket, GetNonce());
         }
     }
 }

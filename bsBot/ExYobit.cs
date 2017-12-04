@@ -16,7 +16,6 @@ namespace bsBot
             publicAPI = "https://yobit.net/api/3/";
             tradeAPI = "https://yobit.net/tapi/";
             min_rate = new Dictionary<string, double>();
-            //key 8FB2D862C2FAAAA6259CFA79D5F15649 secret a3b9830e85af2ab6ccbcb25233785e75
         }
         public override void GetMarkets()
         {
@@ -38,9 +37,7 @@ namespace bsBot
             {
                 return;
             }
-
-            //resp=resp.Replace("[[", "[");
-            //resp=resp.Replace("]]", "]");
+            
             resp = resp.Remove(0, resp.IndexOf(":") + 1);
             resp = resp.Remove(resp.Length - 1, 1);
 
@@ -61,7 +58,7 @@ namespace bsBot
             string parameters = $"method=Trade&pair=" + pair +
                 "&type=" + type.ToString() + "&rate=" + rate.ToString("F8", CultureInfo.InvariantCulture) + "&amount=" +
                 amount.ToString("F8", CultureInfo.InvariantCulture) +
-                "&nonce=" + nonce /*(int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds*/;
+                "&nonce=" + nonce;
 
             string resp = Response(parameters);
             if (resp.Contains("error"))
@@ -74,8 +71,6 @@ namespace bsBot
 
             return DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff") + " Order Type: " + type.ToString() + " Order ID: " + info.returnInfo.order_id
                 + " Price: " + rate.ToString("F8", CultureInfo.InvariantCulture) + " Received: " + info.returnInfo.received + " Remains: " + info.returnInfo.remains + "\n";
-
-            //return DateTime.UtcNow.ToString("dd/MM/yy HH:mm:ss.ffff") + resp + "\n\r";
         }
 
         public override string GetInfo(string pair, int nonce)
@@ -132,7 +127,6 @@ namespace bsBot
                     using (System.IO.StreamReader sr = new System.IO.StreamReader(s))
                     {
                         jsonResponse = sr.ReadToEnd();
-                        //str = String.Format("Response: {0}", jsonResponse);
                     }
                 }
             }

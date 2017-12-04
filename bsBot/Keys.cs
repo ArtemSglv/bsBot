@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
+using System.Net;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -23,7 +18,7 @@ namespace bsBot
             {
                 Bot.currentExchange.Key = textBoxKey.Text;
                 Bot.currentExchange.Secret = textBoxSecret.Text;
-                new Thread(delegate() { Bot.GetInfo(); }).Start();
+                new Thread(delegate() { try { Bot.GetInfo(); } catch (WebException wex) { MessageBox.Show(wex.Message); Application.Exit(); } }).Start();
                 new Settings().Show();
                 Close();
             }
