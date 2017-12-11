@@ -41,7 +41,7 @@ namespace bsBot
         public int success { get; set; }
         public ReturnInfo returnInfo { get; set; }
     }
-    
+
     struct YobitAccountInfo
     {
         public struct ReturnInfo
@@ -88,8 +88,32 @@ namespace bsBot
             public double Volume { get; set; }
             public double Total { get; set; }
         }
-        
+
         public info Buy { get; set; }
         public info Sell { get; set; }
+    }
+    struct CryptopiaAccountInfo
+    {
+        public struct ReturnInfo
+        {
+            public string Symbol { get; set; }
+            public double Total { get; set; }
+            public double Available { get; set; }
+            public double HeldForTrades { get; set; }
+            public double PendingWithdraw { get; set; }
+        }
+        public bool Success { get; set; }
+        public List<ReturnInfo> Data { get; set; }
+    }
+    struct CryptopiaTradeInfo
+    {
+        public struct ReturnInfo
+        {
+            public long OrderId { get; set; }
+            public List<long> FilledOrders { get; set; }
+        }
+        public bool Success { get; set; }
+        public object Error { get; set; }
+        public ReturnInfo Data { get; set; }
     }
 }

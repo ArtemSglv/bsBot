@@ -48,7 +48,7 @@ namespace bsBot
 
         private void choiceExchange_Load(object sender, EventArgs e)
         {
-            comboWithExchange.Items.AddRange(new[] { "yobit.net"/*, "cryptopia.co.nz", "coinexchange.io"*/ });
+            comboWithExchange.Items.AddRange(new[] { "yobit.net", "cryptopia.co.nz"/*, "coinexchange.io"*/ });
             Focus();
         }
     }

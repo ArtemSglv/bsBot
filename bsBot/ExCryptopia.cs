@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Globalization;
 using Newtonsoft.Json;
 using System.Net;
+using System.Web;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
@@ -15,6 +16,13 @@ namespace bsBot
 {
     class ExCryptopia : Exchange
     {
+        struct postObj
+        {
+           public string Market;
+           public string Type;
+           public string Rate;
+           public string Amount;
+        }
         public ExCryptopia()
         {
             Name = "cryptopia.co.nz";
@@ -23,11 +31,16 @@ namespace bsBot
             min_rate = new Dictionary<string, double>();
             //key abae36b2f2954405aea5505b99b4c000 secret dgWT333d6TfRslCO4BlYow7xq9ytW7zV/Xd3xniAc1w=
         }
-        public override string GetInfo(string pair,int nonce)
+        public override string GetInfo(string pair, int nonce)
         {
-            string parameters = $"Currency=" + pair + "&nonce=" + (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
-            //return Response("GetBalance",parameters);
-            Foo("GetBalance", "ETH",nonce); //pair.Remove(pair.IndexOf("_"),pair.Length-pair.IndexOf("_")).ToUpper()
+            string resp = Response("GetBalance", new { Currency = pair }, nonce);
+            //pair.Remove(pair.IndexOf("_"),pair.Length-pair.IndexOf("_")).ToUpper()
+            CryptopiaAccountInfo cAccInfo = JsonConvert.DeserializeObject<CryptopiaAccountInfo>(resp);
+            startBalance = new Dictionary<string, double>();
+            cAccInfo.Data.ForEach(d =>
+            {
+                startBalance.Add(d.Symbol, d.Total);
+            });
             return "";
         }
 
@@ -48,13 +61,14 @@ namespace bsBot
             string command = string.Empty;
             string resp = string.Empty;
 
-            command = "GetMarketOrders" + market + "/1";
+            command = "GetMarketOrders/" + market + "/1";
             resp = new WebClient().DownloadString(publicAPI + command);
             if (resp.Contains("not found"))
             {
                 return;
             }
-
+            resp = resp.Replace("[","");
+            resp = resp.Replace("]", "");
             resp = resp.Trim('{', '}');
             resp = resp.Remove(0, resp.IndexOf("{"));
             resp = resp.Remove(resp.LastIndexOf("}") + 1, resp.Length - resp.LastIndexOf("}") - 1);
@@ -70,103 +84,67 @@ namespace bsBot
             }
         }
 
-        public override string Trade(TypeOrder type, string pair, double rate, double amount,int nonce)
+        public override string Trade(TypeOrder type, string pair, double rate, double amount, int nonce)
         {
-            throw new NotImplementedException();
+            string resp = Response("SubmitTrade", new postObj() {
+                Market = pair,
+                Type = type.ToString(),
+                Rate = rate.ToString("F8", CultureInfo.InvariantCulture),
+                Amount = amount.ToString("F8", CultureInfo.InvariantCulture)
+            }, nonce);
+
+            if (resp.Contains("false"))
+            {
+                return DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff") + " " + resp + "\n";
+            }
+            CryptopiaTradeInfo info = JsonConvert.DeserializeObject<CryptopiaTradeInfo>(resp);
+            //curBalance = info.returnInfo.funds_incl_orders;
+
+            return DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff") + " Order Type: " + type.ToString() + " Order ID: " + info.Data.OrderId
+                + " Price: " + rate.ToString("F8", CultureInfo.InvariantCulture)  + "\n";
         }
 
-        protected string Response(string method, string parameters)
+        protected string Response(string method, object postObj, int nonce)
         {
             string jsonResponse = string.Empty;
 
-            string address = $"{tradeAPI}/" + method + "/";
-
-            var keyByte = Encoding.UTF8.GetBytes(Secret);
-
-            string sign1 = string.Empty;
-            byte[] inputBytes = Encoding.UTF8.GetBytes(parameters);
-            using (var hmac = new System.Security.Cryptography.HMACSHA512(keyByte))
-            {
-                byte[] hashValue = hmac.ComputeHash(inputBytes);
-
-                StringBuilder hex1 = new StringBuilder(hashValue.Length * 2);
-                foreach (byte b in hashValue)
-                {
-                    hex1.AppendFormat("{0:x2}", b);
-                }
-                sign1 = hex1.ToString();
-            }
-
-            WebRequest webRequest = (HttpWebRequest)WebRequest.Create(address);
-            if (webRequest != null)
-            {
-                webRequest.Method = "POST";
-                webRequest.Timeout = 20000;
-                webRequest.ContentType = "application/x-www-form-urlencoded";
-                webRequest.Headers.Add("Key", Key);
-                webRequest.Headers.Add("Sign", sign1);
-
-                webRequest.ContentLength = parameters.Length;
-                using (var dataStream = webRequest.GetRequestStream())
-                {
-                    dataStream.Write(inputBytes, 0, parameters.Length);
-                }
-                using (System.IO.Stream s = webRequest.GetResponse().GetResponseStream())
-                {
-                    using (System.IO.StreamReader sr = new System.IO.StreamReader(s))
-                    {
-                        jsonResponse = sr.ReadToEnd();
-                        //str = String.Format("Response: {0}", jsonResponse);
-                    }
-                }
-            }
-            return jsonResponse;
-        }
-        async void Foo(string method, string cur,int nonce)
-        {
-            var postData = new
-            {
-                Currency = cur
-            };
-
-            // Create Request
-            var request = new HttpRequestMessage();
-            request.Method = HttpMethod.Post;
-            request.RequestUri = new Uri(tradeAPI + method);
-            request.Content = new ObjectContent(typeof(object), postData, new JsonMediaTypeFormatter());
+            string postData = JsonConvert.SerializeObject(postObj);
 
             // Authentication
             string requestContentBase64String = string.Empty;
-            if (request.Content != null)
+            byte[] inputBytes = Encoding.UTF8.GetBytes(postData);
+            // Hash content to ensure message integrity
+            using (var md5 = MD5.Create())
             {
-                // Hash content to ensure message integrity
-                using (var md5 = MD5.Create())
-                {
-                    requestContentBase64String = Convert.ToBase64String(md5.ComputeHash(await request.Content.ReadAsByteArrayAsync()));
-                }
+                requestContentBase64String = Convert.ToBase64String(md5.ComputeHash(inputBytes));
             }
 
-            //create random nonce for each request
-           // var nonce = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds; //Guid.NewGuid().ToString("N");
+            // Create Request
+            var request = (HttpWebRequest)WebRequest.Create(tradeAPI + method);
+            request.Method = "POST";
+            request.ContentType = "application/json; charset=utf-8";
+            request.ContentLength = inputBytes.Length;
 
             //Creating the raw signature string
-            var signature = Encoding.UTF8.GetBytes(string.Concat(Key, HttpMethod.Post, WebUtility.UrlEncode(request.RequestUri.AbsoluteUri.ToLower()), nonce, requestContentBase64String));
+            var signature = Encoding.UTF8.GetBytes(string.Concat(Key, "POST", HttpUtility.UrlEncode(request.RequestUri.AbsoluteUri.ToLower()), nonce, requestContentBase64String));
             using (var hmac = new HMACSHA256(Convert.FromBase64String(Secret)))
             {
-                request.Headers.Authorization = new AuthenticationHeaderValue("amx", string.Format("{0}:{1}:{2}", Key, Convert.ToBase64String(hmac.ComputeHash(signature)), nonce));
+                request.Headers.Add("Authorization", string.Format("amx {0}:{1}:{2}", Key, Convert.ToBase64String(hmac.ComputeHash(signature)), nonce));
             }
-
 
             // Send Request
-            using (var client = new HttpClient())
+            using (var dataStream = request.GetRequestStream())
             {
-                var response = await client.SendAsync(request);
-                if (response.IsSuccessStatusCode)
+                dataStream.Write(inputBytes, 0, postData.Length);
+            }
+            using (System.IO.Stream s = request.GetResponse().GetResponseStream())
+            {
+                using (System.IO.StreamReader sr = new System.IO.StreamReader(s))
                 {
-                    var str = await response.Content.ReadAsStringAsync();
-
+                    jsonResponse = sr.ReadToEnd();
                 }
             }
+            return jsonResponse;
         }
     }
 }
