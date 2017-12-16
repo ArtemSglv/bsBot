@@ -86,7 +86,7 @@ namespace bsBot
                 fs = new FileStream("log.txt", FileMode.OpenOrCreate);
                 fs.Seek(fs.Length, SeekOrigin.Current);
                 sw = new StreamWriter(fs);
-                // startBalance alreadyexsist
+                // startBalance already exsist
                 // trade
                 GetPrice();
                 if (currentExchange.price.diff() > currentExchange.min_rate[currentMarket])
