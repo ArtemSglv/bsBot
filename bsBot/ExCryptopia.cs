@@ -31,17 +31,16 @@ namespace bsBot
             min_rate = new Dictionary<string, double>();
             //key abae36b2f2954405aea5505b99b4c000 secret dgWT333d6TfRslCO4BlYow7xq9ytW7zV/Xd3xniAc1w=
         }
-        public override string GetInfo(string pair, int nonce)
+        public override Dictionary<string, double> GetBalance(string pair, int nonce) //private
         {
             string resp = Response("GetBalance", new { Currency = pair }, nonce);
-            //pair.Remove(pair.IndexOf("_"),pair.Length-pair.IndexOf("_")).ToUpper()
             CryptopiaAccountInfo cAccInfo = JsonConvert.DeserializeObject<CryptopiaAccountInfo>(resp);
-            startBalance = new Dictionary<string, double>();
+            var res = new Dictionary<string, double>();
             cAccInfo.Data.ForEach(d =>
             {
-                startBalance.Add(d.Symbol, d.Total);
+                res.Add(d.Symbol, d.Total);
             });
-            return "";
+            return res;
         }
 
         public override void GetMarkets()
@@ -102,7 +101,7 @@ namespace bsBot
 
             return DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff") + " Order Type: " + type.ToString() + " Order ID: " + info.Data.OrderId
                 + " Price: " + rate.ToString("F8", CultureInfo.InvariantCulture)  + "\n";
-        }
+        } //private
 
         protected string Response(string method, object postObj, int nonce)
         {

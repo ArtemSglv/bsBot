@@ -71,9 +71,9 @@ namespace bsBot
 
             return DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff") + " Order Type: " + type.ToString() + " Order ID: " + info.returnInfo.order_id
                 + " Price: " + rate.ToString("F8", CultureInfo.InvariantCulture) + " Received: " + info.returnInfo.received + " Remains: " + info.returnInfo.remains + "\n";
-        }
+        }  //private
 
-        public override string GetInfo(string pair, int nonce)
+        public override Dictionary<string, double> GetBalance(string pair, int nonce)
         {
             string parameters = $"method=getInfo&nonce=" + nonce;
             string resp = Response(parameters);
@@ -81,10 +81,10 @@ namespace bsBot
             resp = resp.Replace("return", "returnInfo");
 
             YobitAccountInfo yAccInfo= JsonConvert.DeserializeObject<YobitAccountInfo>(resp);
-            startBalance = yAccInfo.returnInfo.funds;
+            var res = yAccInfo.returnInfo.funds;
 
-            return "";
-        }
+            return res;
+        } //private
 
         protected string Response(string parameters) // return JSON response
         {

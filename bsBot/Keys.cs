@@ -18,7 +18,7 @@ namespace bsBot
             {
                 Bot.currentExchange.Key = textBoxKey.Text;
                 Bot.currentExchange.Secret = textBoxSecret.Text;
-                new Thread(delegate() { try { Bot.GetInfo(); } catch (WebException wex) { MessageBox.Show(wex.Message); Application.Exit(); } }).Start();
+                new Thread(delegate() { try { Bot.GetStartBalance(); } catch (WebException wex) { MessageBox.Show(wex.Message); Application.Exit(); } }).Start();
                 new Settings().Show();
                 Close();
             }

@@ -86,11 +86,12 @@ namespace bsBot
                 fs = new FileStream("log.txt", FileMode.OpenOrCreate);
                 fs.Seek(fs.Length, SeekOrigin.Current);
                 sw = new StreamWriter(fs);
-                // startBalance already is exsist
+                // startBalance alreadyexsist
                 // trade
                 GetPrice();
                 if (currentExchange.price.diff() > currentExchange.min_rate[currentMarket])
                 {
+                    //trade
                     switch (rnd.Next(0, 2))
                     {
                         case 0:
@@ -110,15 +111,17 @@ namespace bsBot
                                 break;
                             }
                     }
+                    //curBalance
+                    GetBalance();
 
                     // if balance is not norm then stop trade
                     var coin = GetCoin(currentMarket);
-                    if (currentExchange.startBalance != null && currentExchange.curBalance != null && 
+                    if (currentExchange.startBalance != null && currentExchange.curBalance != null &&
                         (currentExchange.startBalance[coin] != currentExchange.curBalance[coin]))
                     {
                         var s = "Стартовый баланс: " + currentExchange.startBalance[coin] + " Текущий баланс: " +
                             currentExchange.curBalance[coin] +
-                            "\nПокупка/продажа не у себя повлекла изменение баланса. Торговля остановлена\n";
+                            "\nИзменение баланса. Торговля остановлена\n";
                         log.Invoke(new Action(() =>
                         {
                             log.printLog(s);
@@ -159,14 +162,18 @@ namespace bsBot
             currentExchange.GetMarkets();
         }
 
-        static void GetPrice()
+        private static void GetPrice()
         {
             currentExchange.GetPrice(currentMarket);
         }
 
-        public static string GetInfo()
+        public static void GetBalance()
         {
-            return currentExchange.GetInfo(currentMarket, GetNonce());
+            currentExchange.curBalance = currentExchange.GetBalance(currentMarket, GetNonce());
+        }
+        public static void GetStartBalance()
+        {
+            currentExchange.startBalance = currentExchange.GetBalance(currentMarket, GetNonce());
         }
     }
 }
