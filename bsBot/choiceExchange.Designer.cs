@@ -55,6 +55,8 @@
             this.comboBoxMarkets = new System.Windows.Forms.ComboBox();
             this.richTextBoxLog = new System.Windows.Forms.RichTextBox();
             this.groupLog = new System.Windows.Forms.GroupBox();
+            this.textBoxMaxDiffBalance = new System.Windows.Forms.TextBox();
+            this.labelMaxDiffBalance = new System.Windows.Forms.Label();
             this.groupChoiceExchange.SuspendLayout();
             this.groupKeys.SuspendLayout();
             this.groupSettings.SuspendLayout();
@@ -142,6 +144,8 @@
             // 
             // groupSettings
             // 
+            this.groupSettings.Controls.Add(this.textBoxMaxDiffBalance);
+            this.groupSettings.Controls.Add(this.labelMaxDiffBalance);
             this.groupSettings.Controls.Add(this.IsStartedLabel);
             this.groupSettings.Controls.Add(this.textBoxMaxTimeout);
             this.groupSettings.Controls.Add(this.textBoxMinTimeout);
@@ -159,7 +163,7 @@
             this.groupSettings.Controls.Add(this.comboBoxMarkets);
             this.groupSettings.Location = new System.Drawing.Point(350, 12);
             this.groupSettings.Name = "groupSettings";
-            this.groupSettings.Size = new System.Drawing.Size(520, 237);
+            this.groupSettings.Size = new System.Drawing.Size(674, 237);
             this.groupSettings.TabIndex = 4;
             this.groupSettings.TabStop = false;
             // 
@@ -168,7 +172,7 @@
             this.IsStartedLabel.AutoSize = true;
             this.IsStartedLabel.BackColor = System.Drawing.Color.IndianRed;
             this.IsStartedLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.IsStartedLabel.Location = new System.Drawing.Point(392, 14);
+            this.IsStartedLabel.Location = new System.Drawing.Point(546, 14);
             this.IsStartedLabel.Name = "IsStartedLabel";
             this.IsStartedLabel.Size = new System.Drawing.Size(111, 20);
             this.IsStartedLabel.TabIndex = 12;
@@ -222,9 +226,9 @@
             // 
             // textBoxMaxOrder
             // 
-            this.textBoxMaxOrder.Location = new System.Drawing.Point(237, 106);
+            this.textBoxMaxOrder.Location = new System.Drawing.Point(183, 106);
             this.textBoxMaxOrder.Name = "textBoxMaxOrder";
-            this.textBoxMaxOrder.Size = new System.Drawing.Size(113, 22);
+            this.textBoxMaxOrder.Size = new System.Drawing.Size(55, 22);
             this.textBoxMaxOrder.TabIndex = 2;
             this.textBoxMaxOrder.Text = "30000";
             // 
@@ -232,7 +236,7 @@
             // 
             this.textBoxMinOrder.Location = new System.Drawing.Point(60, 106);
             this.textBoxMinOrder.Name = "textBoxMinOrder";
-            this.textBoxMinOrder.Size = new System.Drawing.Size(113, 22);
+            this.textBoxMinOrder.Size = new System.Drawing.Size(55, 22);
             this.textBoxMinOrder.TabIndex = 1;
             this.textBoxMinOrder.Text = "20000";
             // 
@@ -240,7 +244,7 @@
             // 
             this.labelMaxOrder.AutoSize = true;
             this.labelMaxOrder.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.labelMaxOrder.Location = new System.Drawing.Point(177, 106);
+            this.labelMaxOrder.Location = new System.Drawing.Point(123, 106);
             this.labelMaxOrder.Name = "labelMaxOrder";
             this.labelMaxOrder.Size = new System.Drawing.Size(54, 20);
             this.labelMaxOrder.TabIndex = 6;
@@ -269,7 +273,7 @@
             // butStop
             // 
             this.butStop.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butStop.Location = new System.Drawing.Point(384, 133);
+            this.butStop.Location = new System.Drawing.Point(538, 133);
             this.butStop.Name = "butStop";
             this.butStop.Size = new System.Drawing.Size(130, 37);
             this.butStop.TabIndex = 6;
@@ -280,7 +284,7 @@
             // butStart
             // 
             this.butStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butStart.Location = new System.Drawing.Point(384, 83);
+            this.butStart.Location = new System.Drawing.Point(538, 83);
             this.butStart.Name = "butStart";
             this.butStart.Size = new System.Drawing.Size(130, 37);
             this.butStart.TabIndex = 5;
@@ -326,6 +330,24 @@
             this.groupLog.TabIndex = 5;
             this.groupLog.TabStop = false;
             this.groupLog.Text = "Статистика";
+            // 
+            // textBoxMaxDiffBalance
+            // 
+            this.textBoxMaxDiffBalance.Location = new System.Drawing.Point(350, 36);
+            this.textBoxMaxDiffBalance.Name = "textBoxMaxDiffBalance";
+            this.textBoxMaxDiffBalance.Size = new System.Drawing.Size(85, 22);
+            this.textBoxMaxDiffBalance.TabIndex = 13;
+            // 
+            // labelMaxDiffBalance
+            // 
+            this.labelMaxDiffBalance.AutoSize = true;
+            this.labelMaxDiffBalance.BackColor = System.Drawing.Color.Transparent;
+            this.labelMaxDiffBalance.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelMaxDiffBalance.Location = new System.Drawing.Point(265, 14);
+            this.labelMaxDiffBalance.Name = "labelMaxDiffBalance";
+            this.labelMaxDiffBalance.Size = new System.Drawing.Size(170, 40);
+            this.labelMaxDiffBalance.TabIndex = 14;
+            this.labelMaxDiffBalance.Text = "Предел изменения\r\nбаланса:";
             // 
             // choiceExchange
             // 
@@ -382,6 +404,8 @@
         private System.Windows.Forms.Label IsStartedLabel;
         private System.Windows.Forms.RichTextBox richTextBoxLog;
         private System.Windows.Forms.GroupBox groupLog;
+        private System.Windows.Forms.TextBox textBoxMaxDiffBalance;
+        private System.Windows.Forms.Label labelMaxDiffBalance;
     }
 }
 

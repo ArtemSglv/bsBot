@@ -34,6 +34,7 @@ namespace bsBot
         public static bool IsStarted;
         public static Mutex getBalanceMutex = new Mutex();
         public static choiceExchange mainForm;
+        public static double MaxDiffBalance=0;
 
         static Thread threadTrade;
         //static Thread mainOperTrade;
@@ -60,7 +61,7 @@ namespace bsBot
             //mainOperTrade.Abort();
             threadTrade.Abort();
             sw.Close();
-            fs.Close();            
+            fs.Close();
             mainForm.ChangeTitle();
         }
         public static void GetMarkets()
@@ -117,7 +118,7 @@ namespace bsBot
                 //lock (locker)
                 //{
                 mainForm.printLog("Trade oper " + DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff") + " " + wex.Message + "\n");
-                sw.Write("Trade oper " + DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff") + " " + wex.Message + "\n");                    
+                sw.Write("Trade oper " + DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff") + " " + wex.Message + "\n");
                 //}
                 return;
             }
@@ -125,18 +126,34 @@ namespace bsBot
             //{
             mainForm.printLog(str);
             sw.Write(str);
-                
+
             //}
 
         }
+        private static bool CheckBalance()
+        {
+            GetBalance();
 
+            var coin = GetCoin(currentMarket);
+            if (currentExchange.startBalance != null && currentExchange.curBalance != null &&
+                Math.Round(Math.Abs(currentExchange.startBalance[coin] - currentExchange.curBalance[coin]),8) > MaxDiffBalance)
+            {
+                var s = "Стартовый баланс: " + currentExchange.startBalance[coin] + " Текущий баланс: " +
+                    currentExchange.curBalance[coin] +
+                    "\nИзменение баланса. Операция остановлена\n";
+                mainForm.printLog(s);
+                sw.Write(s);
+                return true;
+            }
+            return false;
+        }
         private static void Trade()
         {
             fs = new FileStream("Log.txt", FileMode.OpenOrCreate);
             fs.Seek(fs.Length, SeekOrigin.Current);
             sw = new StreamWriter(fs);
             do
-            {                
+            {
                 // startBalance already exsist
                 // trade
                 GetPrice();
@@ -156,47 +173,22 @@ namespace bsBot
                         case 1:
                             {
                                 price = currentExchange.price.ask - currentExchange.min_rate[currentMarket];
-                                amount = GetRandomNumber(orderLimit.min, orderLimit.max + 1);
-                                //mainOperTrade = new Thread(delegate () { Trade_oper(TypeOrder.sell, price, amount); })
-                                //{
-                                //Name = "Thread MainOper: " + TypeOrder.sell.ToString(),
-                                //IsBackground = true
-                                //};
-                                //mainOperTrade.Start();
+                                amount = GetRandomNumber(orderLimit.min, orderLimit.max + 1);                                
                                 Trade_oper(TypeOrder.sell, price, amount);
                                 Trade_oper(TypeOrder.buy, price, amount);
                                 break;
                             }
                     }
 
-                    //curBalance
-                    //try
-                    //{
-                        GetBalance();
-                    //}
-                    //catch (WebException wex)
-                    //{
-                    //    mainForm.printLog("Get Balance "+DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff") + " " + wex.Message + "\n");
-                    //}
-
                     // if balance is not norm then stop trade
-                    var coin = GetCoin(currentMarket);
-                    if (currentExchange.startBalance != null && currentExchange.curBalance != null &&
-                        (currentExchange.startBalance[coin] != currentExchange.curBalance[coin]))
+                    if(CheckBalance()) //true if diff
                     {
-                        var s = "Стартовый баланс: " + currentExchange.startBalance[coin] + " Текущий баланс: " +
-                            currentExchange.curBalance[coin] +
-                            "\nИзменение баланса. Операция остановлена\n";
-                        mainForm.printLog(s);
-                        sw.Write(s);
-
-                        //sw.Close();
-                        //fs.Close();
+                        IsStarted = false;
+                        mainForm.BotStatus(IsStarted);
                         break;
                     }
                 }
 
-                
                 mainForm.ChangeTitle("Пауза...");
                 Thread.Sleep(rnd.Next(timeout.min, timeout.max + 1));
                 mainForm.ChangeTitle();

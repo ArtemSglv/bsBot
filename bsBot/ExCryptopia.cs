@@ -53,6 +53,7 @@ namespace bsBot
                 AvailableMarkets.Add(p.Label.Replace("/", "_"));
                 min_rate[AvailableMarkets.Last()] = p.MinimumPrice;
             });
+            AvailableMarkets.Sort();
         }
 
         public override void GetPrice(string market)

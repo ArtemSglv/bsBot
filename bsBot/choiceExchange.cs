@@ -138,9 +138,10 @@ namespace bsBot
                     Bot.timeout.min = int.Parse(textBoxMinTimeout.Text) * 1000;
                     Bot.timeout.max = int.Parse(textBoxMaxTimeout.Text) * 1000;
 
+                    double.TryParse(textBoxMaxDiffBalance.Text.Replace(",", "."), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out Bot.MaxDiffBalance);
+
                     Bot.StartTrade(trd);
-                    IsStartedLabel.BackColor = Color.LawnGreen;
-                    IsStartedLabel.Text = "Запущен";
+                    BotStatus(true);
                 }
             }
 
@@ -148,8 +149,7 @@ namespace bsBot
 
         private void butStop_Click(object sender, EventArgs e)
         {
-            IsStartedLabel.BackColor = Color.IndianRed;
-            IsStartedLabel.Text = "Остановлен";
+            BotStatus(false);
             Bot.StopTrade();
         }
 
@@ -170,7 +170,34 @@ namespace bsBot
             {
                 print(str);
             }
-            
+
+        }
+        private void ChangeStatus(Color color, string status)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() =>
+                {
+                    IsStartedLabel.BackColor = color;
+                    IsStartedLabel.Text = status;
+                }));
+            }
+            else
+            {
+                IsStartedLabel.BackColor = color;
+                IsStartedLabel.Text = status;
+            }
+        }
+        public void BotStatus(bool IsStarted)
+        {
+            if (IsStarted)
+            {
+                ChangeStatus(Color.LawnGreen, "Запущен");
+            }
+            else
+            {
+                ChangeStatus(Color.IndianRed, "Остановлен");
+            }
         }
 
         private void textBoxSecret_TextChanged(object sender, EventArgs e)
