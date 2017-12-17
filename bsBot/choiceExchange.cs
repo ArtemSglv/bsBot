@@ -105,9 +105,10 @@ namespace bsBot
             }
             catch (WebException wex)
             {
-                MessageBox.Show(wex.Message);
-                Application.Exit();
-                return;
+                //MessageBox.Show(wex.Message);
+                printLog("Get start balance "+DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff") + " " + wex.Message + "\n");
+                //Application.Exit();
+                //return;
             }
 
             ChangeTitle();
@@ -152,11 +153,24 @@ namespace bsBot
             Bot.StopTrade();
         }
 
-        public void printLog(string str)
+        private void print(string str)
         {
             richTextBoxLog.Text += str;
             richTextBoxLog.SelectionStart = richTextBoxLog.TextLength;
             richTextBoxLog.ScrollToCaret();
+        }
+        public void printLog(string str)
+        {
+            if (InvokeRequired)
+                Invoke(new Action(() =>
+                {
+                    print(str);
+                }));
+            else
+            {
+                print(str);
+            }
+            
         }
 
         private void textBoxSecret_TextChanged(object sender, EventArgs e)

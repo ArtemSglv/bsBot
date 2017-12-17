@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Net;
 using System.Threading;
 using System.IO;
 using System.Configuration;
@@ -32,30 +32,54 @@ namespace bsBot
         public static OrderLimit orderLimit = new OrderLimit();
         public static TimeOut timeout = new TimeOut();
         public static bool IsStarted;
-        public static Mutex getBalanceMutex=new Mutex();
+        public static Mutex getBalanceMutex = new Mutex();
         public static choiceExchange mainForm;
 
         static Thread threadTrade;
+        //static Thread mainOperTrade;
         static Random rnd = new Random();
         static FileStream fs;
         static StreamWriter sw;
         static double price = 0;
-        static double amount = 0;        
+        static double amount = 0;
+        //static object locker = new object();
 
-        private static void Buy(double price, double amount) // bid + min_rate
+        public static void StartTrade(Thread trd)
         {
-            string str = currentExchange.Trade(TypeOrder.buy, currentMarket, price, amount, GetNonce());
-            sw.Write(str);
-            mainForm.Invoke(new Action(() => { mainForm.printLog(str); }));
+            IsStarted = true;
+            threadTrade = new Thread(delegate () { trd.Join(); try { Trade(); } catch { } })
+            {
+                Name = "Trade",
+                IsBackground = true
+            }; // пустой catch ОЧЕНЬ ПЛОХО!!
+            threadTrade.Start();
+        }
+        public static void StopTrade()
+        {
+            IsStarted = false;
+            //mainOperTrade.Abort();
+            threadTrade.Abort();
+            sw.Close();
+            fs.Close();            
+            mainForm.ChangeTitle();
+        }
+        public static void GetMarkets()
+        {
+            currentExchange.GetMarkets();
+        }
+        public static void GetBalance()
+        {
+            currentExchange.curBalance = currentExchange.GetBalance("", GetNonce());
+        }
+        public static void GetStartBalance()
+        {
+            currentExchange.startBalance = currentExchange.GetBalance("", GetNonce()); //for all currency
         }
 
-        private static void Sell(double price, double amount) // ask - min_rate
+        private static void GetPrice()
         {
-            string str = currentExchange.Trade(TypeOrder.sell, currentMarket, price, amount, GetNonce());
-            sw.Write(str);
-            mainForm.Invoke(new Action(() => { mainForm.printLog(str); }));
+            currentExchange.GetPrice(currentMarket);
         }
-
         private static void ChangeConfig()
         {
             var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
@@ -80,14 +104,38 @@ namespace bsBot
             return r.Match(market).Value;
         }
 
-        static void Trade()
+        private static void Trade_oper(TypeOrder type, double price, double amount) //buy: bid + min_rate; sell: ask - min_rate
         {
-            //getBalanceMutex.WaitOne();
-            do
+            string str = string.Empty;
+            try
             {
-                fs = new FileStream("mainForm.txt", FileMode.OpenOrCreate);
-                fs.Seek(fs.Length, SeekOrigin.Current);
-                sw = new StreamWriter(fs);
+                str = currentExchange.Trade(type, currentMarket, price, amount, GetNonce());
+
+            }
+            catch (WebException wex)
+            {
+                //lock (locker)
+                //{
+                    sw.Write(DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff") + " " + wex.Message + "\n");
+                    mainForm.printLog("Trade oper "+DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff") + " " + wex.Message + "\n");
+                //}
+                return;
+            }
+            //lock (locker)
+            //{
+                sw.Write(str);
+                mainForm.printLog(str);
+            //}
+
+        }
+
+        private static void Trade()
+        {
+            fs = new FileStream("Log.txt", FileMode.OpenOrCreate);
+            fs.Seek(fs.Length, SeekOrigin.Current);
+            sw = new StreamWriter(fs);
+            do
+            {                
                 // startBalance already exsist
                 // trade
                 GetPrice();
@@ -100,21 +148,35 @@ namespace bsBot
                             {
                                 price = currentExchange.price.bid + currentExchange.min_rate[currentMarket];
                                 amount = GetRandomNumber(orderLimit.min, orderLimit.max + 1);
-                                Buy(price, amount);
-                                Sell(price, amount);
+                                Trade_oper(TypeOrder.buy, price, amount);
+                                Trade_oper(TypeOrder.sell, price, amount);
                                 break;
                             }
                         case 1:
                             {
                                 price = currentExchange.price.ask - currentExchange.min_rate[currentMarket];
                                 amount = GetRandomNumber(orderLimit.min, orderLimit.max + 1);
-                                Sell(price, amount);
-                                Buy(price, amount);
+                                //mainOperTrade = new Thread(delegate () { Trade_oper(TypeOrder.sell, price, amount); })
+                                //{
+                                //Name = "Thread MainOper: " + TypeOrder.sell.ToString(),
+                                //IsBackground = true
+                                //};
+                                //mainOperTrade.Start();
+                                Trade_oper(TypeOrder.sell, price, amount);
+                                Trade_oper(TypeOrder.buy, price, amount);
                                 break;
                             }
                     }
+
                     //curBalance
-                    GetBalance();
+                    try
+                    {
+                        GetBalance();
+                    }
+                    catch (WebException wex)
+                    {
+                        mainForm.printLog("Get Balance "+DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff") + " " + wex.Message + "\n");
+                    }
 
                     // if balance is not norm then stop trade
                     var coin = GetCoin(currentMarket);
@@ -124,64 +186,23 @@ namespace bsBot
                         var s = "Стартовый баланс: " + currentExchange.startBalance[coin] + " Текущий баланс: " +
                             currentExchange.curBalance[coin] +
                             "\nИзменение баланса. Операция остановлена\n";
-                        mainForm.Invoke(new Action(() =>
-                        {
-                            mainForm.printLog(s);
-                        }));
+                        mainForm.printLog(s);
                         sw.Write(s);
 
-                        sw.Close();
-                        fs.Close();
+                        //sw.Close();
+                        //fs.Close();
                         break;
                     }
                 }
 
-                sw.Close();
-                fs.Close();
+                
                 mainForm.ChangeTitle("Пауза...");
                 Thread.Sleep(rnd.Next(timeout.min, timeout.max + 1));
                 mainForm.ChangeTitle();
             } while (IsStarted);
-            //getBalanceMutex.ReleaseMutex();
-        }
 
-        public static void StartTrade(Thread trd)
-        {
-            IsStarted = true;
-            threadTrade = new Thread(delegate () { trd.Join(); try { Trade(); } catch { } })
-            {
-                Name = "Trade",
-                IsBackground = true
-            }; // пустой catch ОЧЕНЬ ПЛОХО!!
-            threadTrade.Start();
-        }
-
-        public static void StopTrade()
-        {
-            //getBalanceMutex.ReleaseMutex();
-            IsStarted = false;
             sw.Close();
             fs.Close();
-            threadTrade.Abort();                        
-        }
-
-        public static void GetMarkets()
-        {
-            currentExchange.GetMarkets();
-        }
-
-        private static void GetPrice()
-        {
-            currentExchange.GetPrice(currentMarket);
-        }
-
-        public static void GetBalance()
-        {
-            currentExchange.curBalance = currentExchange.GetBalance("", GetNonce());
-        }
-        public static void GetStartBalance()
-        {
-            currentExchange.startBalance = currentExchange.GetBalance("", GetNonce()); //for all currency
         }
     }
 }

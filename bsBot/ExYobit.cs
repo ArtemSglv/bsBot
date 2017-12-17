@@ -67,7 +67,6 @@ namespace bsBot
             }
             resp = resp.Replace("return", "returnInfo");
             YobitTradeInfo info = JsonConvert.DeserializeObject<YobitTradeInfo>(resp);
-            //curBalance = info.returnInfo.funds_incl_orders;
 
             return DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff") + " Order Type: " + type.ToString() + " Order ID: " + info.returnInfo.order_id
                 + " Price: " + rate.ToString("F8", CultureInfo.InvariantCulture) + " Received: " + info.returnInfo.received + " Remains: " + info.returnInfo.remains + "\n";
@@ -86,16 +85,12 @@ namespace bsBot
             return res;
         } //private
 
-        protected string Response(string parameters) // return JSON response
+        private string Sign(string parameters, byte[] inputBytes)
         {
-            string jsonResponse = string.Empty;
-
-            string address = $"{tradeAPI}/";
-
             var keyByte = Encoding.UTF8.GetBytes(Secret);
 
             string sign1 = string.Empty;
-            byte[] inputBytes = Encoding.UTF8.GetBytes(parameters);
+            
             using (var hmac = new System.Security.Cryptography.HMACSHA512(keyByte))
             {
                 byte[] hashValue = hmac.ComputeHash(inputBytes);
@@ -107,6 +102,16 @@ namespace bsBot
                 }
                 sign1 = hex1.ToString();
             }
+            return sign1;
+        }
+
+        private string Response(string parameters) // return JSON response
+        {
+            string jsonResponse = string.Empty;
+            string address = $"{tradeAPI}/";
+            byte[] inputBytes = Encoding.UTF8.GetBytes(parameters);
+
+            string sign1 = Sign(parameters,inputBytes);
 
             WebRequest webRequest = (HttpWebRequest)WebRequest.Create(address);
             if (webRequest != null)
