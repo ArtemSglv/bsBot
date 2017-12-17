@@ -30,7 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(choiceExchange));
             this.comboWithExchange = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.labelSelectExchange = new System.Windows.Forms.Label();
             this.groupChoiceExchange = new System.Windows.Forms.GroupBox();
             this.groupKeys = new System.Windows.Forms.GroupBox();
             this.textBoxSecret = new System.Windows.Forms.TextBox();
@@ -57,10 +57,15 @@
             this.groupLog = new System.Windows.Forms.GroupBox();
             this.textBoxMaxDiffBalance = new System.Windows.Forms.TextBox();
             this.labelMaxDiffBalance = new System.Windows.Forms.Label();
+            this.groupLogic = new System.Windows.Forms.GroupBox();
+            this.radioButOnlyBuy = new System.Windows.Forms.RadioButton();
+            this.radioButOnlySell = new System.Windows.Forms.RadioButton();
+            this.radioButRandLogic = new System.Windows.Forms.RadioButton();
             this.groupChoiceExchange.SuspendLayout();
             this.groupKeys.SuspendLayout();
             this.groupSettings.SuspendLayout();
             this.groupLog.SuspendLayout();
+            this.groupLogic.SuspendLayout();
             this.SuspendLayout();
             // 
             // comboWithExchange
@@ -73,19 +78,19 @@
             this.comboWithExchange.TabIndex = 0;
             this.comboWithExchange.SelectedIndexChanged += new System.EventHandler(this.comboWithExchange_SelectedIndexChanged);
             // 
-            // label1
+            // labelSelectExchange
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(3, 10);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(153, 20);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Выберите биржу:";
+            this.labelSelectExchange.AutoSize = true;
+            this.labelSelectExchange.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelSelectExchange.Location = new System.Drawing.Point(3, 10);
+            this.labelSelectExchange.Name = "labelSelectExchange";
+            this.labelSelectExchange.Size = new System.Drawing.Size(153, 20);
+            this.labelSelectExchange.TabIndex = 1;
+            this.labelSelectExchange.Text = "Выберите биржу:";
             // 
             // groupChoiceExchange
             // 
-            this.groupChoiceExchange.Controls.Add(this.label1);
+            this.groupChoiceExchange.Controls.Add(this.labelSelectExchange);
             this.groupChoiceExchange.Controls.Add(this.comboWithExchange);
             this.groupChoiceExchange.Location = new System.Drawing.Point(12, 12);
             this.groupChoiceExchange.Name = "groupChoiceExchange";
@@ -144,6 +149,7 @@
             // 
             // groupSettings
             // 
+            this.groupSettings.Controls.Add(this.groupLogic);
             this.groupSettings.Controls.Add(this.textBoxMaxDiffBalance);
             this.groupSettings.Controls.Add(this.labelMaxDiffBalance);
             this.groupSettings.Controls.Add(this.IsStartedLabel);
@@ -163,7 +169,7 @@
             this.groupSettings.Controls.Add(this.comboBoxMarkets);
             this.groupSettings.Location = new System.Drawing.Point(350, 12);
             this.groupSettings.Name = "groupSettings";
-            this.groupSettings.Size = new System.Drawing.Size(674, 237);
+            this.groupSettings.Size = new System.Drawing.Size(700, 237);
             this.groupSettings.TabIndex = 4;
             this.groupSettings.TabStop = false;
             // 
@@ -172,7 +178,7 @@
             this.IsStartedLabel.AutoSize = true;
             this.IsStartedLabel.BackColor = System.Drawing.Color.IndianRed;
             this.IsStartedLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.IsStartedLabel.Location = new System.Drawing.Point(546, 14);
+            this.IsStartedLabel.Location = new System.Drawing.Point(563, 14);
             this.IsStartedLabel.Name = "IsStartedLabel";
             this.IsStartedLabel.Size = new System.Drawing.Size(111, 20);
             this.IsStartedLabel.TabIndex = 12;
@@ -273,7 +279,7 @@
             // butStop
             // 
             this.butStop.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butStop.Location = new System.Drawing.Point(538, 133);
+            this.butStop.Location = new System.Drawing.Point(555, 133);
             this.butStop.Name = "butStop";
             this.butStop.Size = new System.Drawing.Size(130, 37);
             this.butStop.TabIndex = 6;
@@ -284,7 +290,7 @@
             // butStart
             // 
             this.butStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butStart.Location = new System.Drawing.Point(538, 83);
+            this.butStart.Location = new System.Drawing.Point(555, 83);
             this.butStart.Name = "butStart";
             this.butStart.Size = new System.Drawing.Size(130, 37);
             this.butStart.TabIndex = 5;
@@ -316,7 +322,7 @@
             this.richTextBoxLog.Dock = System.Windows.Forms.DockStyle.Fill;
             this.richTextBoxLog.Location = new System.Drawing.Point(3, 22);
             this.richTextBoxLog.Name = "richTextBoxLog";
-            this.richTextBoxLog.Size = new System.Drawing.Size(1006, 166);
+            this.richTextBoxLog.Size = new System.Drawing.Size(1035, 166);
             this.richTextBoxLog.TabIndex = 0;
             this.richTextBoxLog.Text = "";
             // 
@@ -326,7 +332,7 @@
             this.groupLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.groupLog.Location = new System.Drawing.Point(12, 250);
             this.groupLog.Name = "groupLog";
-            this.groupLog.Size = new System.Drawing.Size(1012, 191);
+            this.groupLog.Size = new System.Drawing.Size(1041, 191);
             this.groupLog.TabIndex = 5;
             this.groupLog.TabStop = false;
             this.groupLog.Text = "Статистика";
@@ -349,11 +355,59 @@
             this.labelMaxDiffBalance.TabIndex = 14;
             this.labelMaxDiffBalance.Text = "Предел изменения\r\nбаланса:";
             // 
+            // groupLogic
+            // 
+            this.groupLogic.Controls.Add(this.radioButRandLogic);
+            this.groupLogic.Controls.Add(this.radioButOnlySell);
+            this.groupLogic.Controls.Add(this.radioButOnlyBuy);
+            this.groupLogic.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.groupLogic.Location = new System.Drawing.Point(269, 76);
+            this.groupLogic.Name = "groupLogic";
+            this.groupLogic.Size = new System.Drawing.Size(200, 116);
+            this.groupLogic.TabIndex = 15;
+            this.groupLogic.TabStop = false;
+            this.groupLogic.Text = "Логика";
+            // 
+            // radioButOnlyBuy
+            // 
+            this.radioButOnlyBuy.AutoSize = true;
+            this.radioButOnlyBuy.Location = new System.Drawing.Point(13, 26);
+            this.radioButOnlyBuy.Name = "radioButOnlyBuy";
+            this.radioButOnlyBuy.Size = new System.Drawing.Size(99, 24);
+            this.radioButOnlyBuy.TabIndex = 0;
+            this.radioButOnlyBuy.Tag = "0";
+            this.radioButOnlyBuy.Text = "Покупка";
+            this.radioButOnlyBuy.UseVisualStyleBackColor = true;
+            // 
+            // radioButOnlySell
+            // 
+            this.radioButOnlySell.AutoSize = true;
+            this.radioButOnlySell.Location = new System.Drawing.Point(13, 56);
+            this.radioButOnlySell.Name = "radioButOnlySell";
+            this.radioButOnlySell.Size = new System.Drawing.Size(107, 24);
+            this.radioButOnlySell.TabIndex = 1;
+            this.radioButOnlySell.Tag = "1";
+            this.radioButOnlySell.Text = "Продажа";
+            this.radioButOnlySell.UseVisualStyleBackColor = true;
+            // 
+            // radioButRandLogic
+            // 
+            this.radioButRandLogic.AutoSize = true;
+            this.radioButRandLogic.Checked = true;
+            this.radioButRandLogic.Location = new System.Drawing.Point(13, 86);
+            this.radioButRandLogic.Name = "radioButRandLogic";
+            this.radioButRandLogic.Size = new System.Drawing.Size(178, 24);
+            this.radioButRandLogic.TabIndex = 2;
+            this.radioButRandLogic.TabStop = true;
+            this.radioButRandLogic.Tag = "2";
+            this.radioButRandLogic.Text = "Покупка/продажа";
+            this.radioButRandLogic.UseVisualStyleBackColor = true;
+            // 
             // choiceExchange
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1036, 453);
+            this.ClientSize = new System.Drawing.Size(1065, 453);
             this.Controls.Add(this.groupLog);
             this.Controls.Add(this.groupSettings);
             this.Controls.Add(this.groupKeys);
@@ -372,6 +426,8 @@
             this.groupSettings.ResumeLayout(false);
             this.groupSettings.PerformLayout();
             this.groupLog.ResumeLayout(false);
+            this.groupLogic.ResumeLayout(false);
+            this.groupLogic.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -379,7 +435,7 @@
         #endregion
 
         private System.Windows.Forms.ComboBox comboWithExchange;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label labelSelectExchange;
         private System.Windows.Forms.GroupBox groupChoiceExchange;
         private System.Windows.Forms.GroupBox groupKeys;
         private System.Windows.Forms.Label labelKey;
@@ -406,6 +462,10 @@
         private System.Windows.Forms.GroupBox groupLog;
         private System.Windows.Forms.TextBox textBoxMaxDiffBalance;
         private System.Windows.Forms.Label labelMaxDiffBalance;
+        private System.Windows.Forms.GroupBox groupLogic;
+        private System.Windows.Forms.RadioButton radioButRandLogic;
+        private System.Windows.Forms.RadioButton radioButOnlySell;
+        private System.Windows.Forms.RadioButton radioButOnlyBuy;
     }
 }
 

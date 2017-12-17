@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Media;
 using System.Net;
 using System.Threading;
 using System.IO;
@@ -24,6 +24,12 @@ namespace bsBot
         sell = 1,
         buy = 0
     }
+    enum Logic
+    {
+        Buy = 0,
+        Sell = 1,
+        Random = 2
+    }
 
     static class Bot
     {
@@ -34,7 +40,8 @@ namespace bsBot
         public static bool IsStarted;
         public static Mutex getBalanceMutex = new Mutex();
         public static choiceExchange mainForm;
-        public static double MaxDiffBalance=0;
+        public static double MaxDiffBalance = 0;
+        public static Logic botLogic = Logic.Random;
 
         static Thread threadTrade;
         //static Thread mainOperTrade;
@@ -130,13 +137,20 @@ namespace bsBot
             //}
 
         }
+        private static void Notification()
+        {
+            mainForm.Notify();
+            SoundPlayer player = new SoundPlayer("notify.wav");
+            player.Play();
+        }
         private static bool CheckBalance()
         {
             GetBalance();
 
             var coin = GetCoin(currentMarket);
-            if (currentExchange.startBalance != null && currentExchange.curBalance != null &&
-                Math.Round(Math.Abs(currentExchange.startBalance[coin] - currentExchange.curBalance[coin]),8) > MaxDiffBalance)
+            if (currentExchange.startBalance != null && currentExchange.curBalance != null && currentExchange.startBalance.ContainsKey(coin) &&
+                currentExchange.curBalance.ContainsKey(coin) &&
+                Math.Round(Math.Abs(currentExchange.startBalance[coin] - currentExchange.curBalance[coin]), 8) > MaxDiffBalance)
             {
                 var s = "Стартовый баланс: " + currentExchange.startBalance[coin] + " Текущий баланс: " +
                     currentExchange.curBalance[coin] +
@@ -160,7 +174,8 @@ namespace bsBot
                 if (currentExchange.price.diff() > currentExchange.min_rate[currentMarket])
                 {
                     //trade
-                    switch (rnd.Next(0, 2))
+                    int flag = (int)botLogic <= 1 ? (int)botLogic : rnd.Next(0, 2);
+                    switch (flag)
                     {
                         case 0:
                             {
@@ -173,7 +188,7 @@ namespace bsBot
                         case 1:
                             {
                                 price = currentExchange.price.ask - currentExchange.min_rate[currentMarket];
-                                amount = GetRandomNumber(orderLimit.min, orderLimit.max + 1);                                
+                                amount = GetRandomNumber(orderLimit.min, orderLimit.max + 1);
                                 Trade_oper(TypeOrder.sell, price, amount);
                                 Trade_oper(TypeOrder.buy, price, amount);
                                 break;
@@ -181,10 +196,11 @@ namespace bsBot
                     }
 
                     // if balance is not norm then stop trade
-                    if(CheckBalance()) //true if diff
+                    if (CheckBalance()) //true if diff   
                     {
                         IsStarted = false;
                         mainForm.BotStatus(IsStarted);
+                        Notification();
                         break;
                     }
                 }

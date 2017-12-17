@@ -20,6 +20,9 @@ namespace bsBot
         private void choiceExchange_Load(object sender, EventArgs e)
         {
             Text = Title;
+            radioButOnlyBuy.CheckedChanged += radioButton_CheckedChanged;
+            radioButOnlySell.CheckedChanged += radioButton_CheckedChanged;
+            radioButRandLogic.CheckedChanged += radioButton_CheckedChanged;
             groupKeys.Enabled = false;
             groupSettings.Enabled = false;
             comboWithExchange.Items.AddRange(new[] { "yobit.net", "cryptopia.co.nz" });
@@ -197,6 +200,24 @@ namespace bsBot
             else
             {
                 ChangeStatus(Color.IndianRed, "Остановлен");
+            }
+        }
+        public void Notify()
+        {
+            MessageBox.Show("Предел изменения баланса превышен!");
+        }
+
+        private void radioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            RadioButton radioButton = (RadioButton)sender;
+            if (radioButton.Checked)
+            {
+                switch (Convert.ToInt16(radioButton.Tag))
+                {
+                    case 0: { Bot.botLogic = Logic.Buy; break; }
+                    case 1: { Bot.botLogic = Logic.Sell; break; }
+                    case 2: { Bot.botLogic = Logic.Random; break; }
+                }
             }
         }
 
