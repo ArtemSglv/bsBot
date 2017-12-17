@@ -116,15 +116,16 @@ namespace bsBot
             {
                 //lock (locker)
                 //{
-                    sw.Write(DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff") + " " + wex.Message + "\n");
-                    mainForm.printLog("Trade oper "+DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff") + " " + wex.Message + "\n");
+                mainForm.printLog("Trade oper " + DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff") + " " + wex.Message + "\n");
+                sw.Write("Trade oper " + DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff") + " " + wex.Message + "\n");                    
                 //}
                 return;
             }
             //lock (locker)
             //{
-                sw.Write(str);
-                mainForm.printLog(str);
+            mainForm.printLog(str);
+            sw.Write(str);
+                
             //}
 
         }
@@ -169,14 +170,14 @@ namespace bsBot
                     }
 
                     //curBalance
-                    try
-                    {
+                    //try
+                    //{
                         GetBalance();
-                    }
-                    catch (WebException wex)
-                    {
-                        mainForm.printLog("Get Balance "+DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff") + " " + wex.Message + "\n");
-                    }
+                    //}
+                    //catch (WebException wex)
+                    //{
+                    //    mainForm.printLog("Get Balance "+DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff") + " " + wex.Message + "\n");
+                    //}
 
                     // if balance is not norm then stop trade
                     var coin = GetCoin(currentMarket);
