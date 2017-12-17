@@ -39,8 +39,8 @@
             this.textBoxMinOrder = new System.Windows.Forms.TextBox();
             this.textBoxMaxOrder = new System.Windows.Forms.TextBox();
             this.textBoxMinTimeout = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.labelTimeMax = new System.Windows.Forms.Label();
+            this.labelTimeMin = new System.Windows.Forms.Label();
             this.labelTimeout = new System.Windows.Forms.Label();
             this.textBoxMaxTimeout = new System.Windows.Forms.TextBox();
             this.IsStartedLabel = new System.Windows.Forms.Label();
@@ -138,25 +138,25 @@
             this.textBoxMinTimeout.Size = new System.Drawing.Size(38, 22);
             this.textBoxMinTimeout.TabIndex = 3;
             // 
-            // label1
+            // labelTimeMax
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(109, 190);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(54, 20);
-            this.label1.TabIndex = 11;
-            this.label1.Text = "макс:";
+            this.labelTimeMax.AutoSize = true;
+            this.labelTimeMax.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelTimeMax.Location = new System.Drawing.Point(109, 190);
+            this.labelTimeMax.Name = "labelTimeMax";
+            this.labelTimeMax.Size = new System.Drawing.Size(54, 20);
+            this.labelTimeMax.TabIndex = 11;
+            this.labelTimeMax.Text = "макс:";
             // 
-            // label2
+            // labelTimeMin
             // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label2.Location = new System.Drawing.Point(8, 190);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(46, 20);
-            this.label2.TabIndex = 10;
-            this.label2.Text = "мин:";
+            this.labelTimeMin.AutoSize = true;
+            this.labelTimeMin.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelTimeMin.Location = new System.Drawing.Point(8, 190);
+            this.labelTimeMin.Name = "labelTimeMin";
+            this.labelTimeMin.Size = new System.Drawing.Size(46, 20);
+            this.labelTimeMin.TabIndex = 10;
+            this.labelTimeMin.Text = "мин:";
             // 
             // labelTimeout
             // 
@@ -194,8 +194,8 @@
             this.Controls.Add(this.IsStartedLabel);
             this.Controls.Add(this.textBoxMaxTimeout);
             this.Controls.Add(this.textBoxMinTimeout);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.label2);
+            this.Controls.Add(this.labelTimeMax);
+            this.Controls.Add(this.labelTimeMin);
             this.Controls.Add(this.labelTimeout);
             this.Controls.Add(this.textBoxMaxOrder);
             this.Controls.Add(this.textBoxMinOrder);
@@ -229,8 +229,8 @@
         private System.Windows.Forms.TextBox textBoxMinOrder;
         private System.Windows.Forms.TextBox textBoxMaxOrder;
         private System.Windows.Forms.TextBox textBoxMinTimeout;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label labelTimeMax;
+        private System.Windows.Forms.Label labelTimeMin;
         private System.Windows.Forms.Label labelTimeout;
         private System.Windows.Forms.TextBox textBoxMaxTimeout;
         private System.Windows.Forms.Label IsStartedLabel;

@@ -34,7 +34,7 @@ namespace bsBot
                 Bot.timeout.min = int.Parse(textBoxMinTimeout.Text)*1000;
                 Bot.timeout.max = int.Parse(textBoxMaxTimeout.Text)*1000;
 
-                Bot.StartTrade();
+               // Bot.StartTrade();
                 IsStartedLabel.BackColor = Color.LawnGreen;
                 IsStartedLabel.Text = "Запущен";
             }

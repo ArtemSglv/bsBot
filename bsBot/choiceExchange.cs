@@ -1,55 +1,167 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
+using System.Net;
+using System.Drawing;
+using System.Linq;
+using System.Globalization;
 
 namespace bsBot
 {
     public partial class choiceExchange : Form
     {
+        private const string Title = "Trade Bot [Готово]";
+
         public choiceExchange()
         {
             InitializeComponent();
         }
 
+        private void choiceExchange_Load(object sender, EventArgs e)
+        {
+            Text = Title;
+            groupKeys.Enabled = false;
+            groupSettings.Enabled = false;
+            comboWithExchange.Items.AddRange(new[] { "yobit.net", "cryptopia.co.nz" });
+            Bot.mainForm = this;
+            Focus();
+        }
+
         private void comboWithExchange_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (!groupKeys.Enabled)
+                groupKeys.Enabled = true;
+
             switch (comboWithExchange.SelectedItem.ToString())
             {
                 case "yobit.net": { Bot.currentExchange = new ExYobit(); break; }
                 case "cryptopia.co.nz": { Bot.currentExchange = new ExCryptopia(); break; }
-                    //case "yobit.net": { Bot.currentExchange = new ExYobit(); break; }
             }
+
             // загрузка доступных маркетов в отдельном потоке
-            Thread trd = new Thread(delegate ()
+            Thread trd = new Thread(delegate () { GetMarketsInOtherThread(); })
             {
-                try { Bot.GetMarkets(); }
-                catch (System.Net.WebException ex)
-                {
-                    MessageBox.Show(ex.Message + "\n" + "Проверьте подключение к Интернету");                    
-                    Application.Exit();
-                }
-            });
+                Name = "Download markets",
+                IsBackground = true
+            };
             trd.Start();
-            trd.Join();
 
-            // запуск формы ввода ключей
-            new Keys().Show();
+            //trd.Join();
 
-            // close this form
-            //Close();
+
+        }
+        private void EditTextForm(string add_title)
+        {
+            if (!add_title.Equals(string.Empty))
+                Text = Text.Replace("Готово", add_title);
+            else
+                Text = Title;
+        }
+        public void ChangeTitle(string add_title = "")
+        {
+            if (InvokeRequired)
+                Invoke(new Action(() =>
+                {
+                    EditTextForm(add_title);
+                }));
+            else
+            {
+                EditTextForm(add_title);
+            }
+
         }
 
-        private void choiceExchange_Load(object sender, EventArgs e)
+        private void GetMarketsInOtherThread()
         {
-            comboWithExchange.Items.AddRange(new[] { "yobit.net", "cryptopia.co.nz"/*, "coinexchange.io"*/ });
-            Focus();
+
+            ChangeTitle("Загрузка доступных маркетов...");
+            try { Bot.GetMarkets(); }
+            catch (WebException ex)
+            {
+                MessageBox.Show(ex.Message + "\n" + "Проверьте подключение к Интернету");
+                Application.Exit();
+                return;
+            }
+            ChangeTitle();
+
+            Invoke(new Action(() =>
+            {
+                comboBoxMarkets.Items.AddRange(Bot.currentExchange.AvailableMarkets.ToArray());
+
+                // set enable groupSettings
+                //groupKeys.Enabled = true;
+                groupSettings.Enabled = true;
+            }));
+        }
+
+        private void GetBalanceInOtherThread()
+        {
+
+            //Bot.getBalanceMutex.WaitOne();
+            ChangeTitle("Загрузка баланса...");
+            try
+            {
+                Bot.GetStartBalance();
+            }
+            catch (WebException wex)
+            {
+                MessageBox.Show(wex.Message);
+                Application.Exit();
+                return;
+            }
+
+            ChangeTitle();
+            //Bot.getBalanceMutex.ReleaseMutex();
+
+        }
+
+        private void butStart_Click(object sender, EventArgs e)
+        {
+            if (textBoxKey.Text != "" && textBoxSecret.Text != "")
+            {
+                Bot.currentExchange.Key = textBoxKey.Text;
+                Bot.currentExchange.Secret = textBoxSecret.Text;
+
+                Thread trd = new Thread(delegate () { GetBalanceInOtherThread(); });
+                trd.Name = "Get Balance";
+                trd.IsBackground = true;
+                trd.Start();
+
+                if (!Bot.IsStarted && comboBoxMarkets.SelectedIndex != -1 && Controls.OfType<TextBox>().All(tb => { return tb.Text != string.Empty; }))
+                {
+                    Bot.currentMarket = comboBoxMarkets.SelectedItem.ToString();
+
+                    Bot.orderLimit.min = double.Parse(textBoxMinOrder.Text.Replace(",", "."), CultureInfo.InvariantCulture);
+                    Bot.orderLimit.max = double.Parse(textBoxMaxOrder.Text.Replace(",", "."), CultureInfo.InvariantCulture);
+
+                    Bot.timeout.min = int.Parse(textBoxMinTimeout.Text) * 1000;
+                    Bot.timeout.max = int.Parse(textBoxMaxTimeout.Text) * 1000;
+
+                    Bot.StartTrade(trd);
+                    IsStartedLabel.BackColor = Color.LawnGreen;
+                    IsStartedLabel.Text = "Запущен";
+                }
+            }
+
+        }
+
+        private void butStop_Click(object sender, EventArgs e)
+        {
+            IsStartedLabel.BackColor = Color.IndianRed;
+            IsStartedLabel.Text = "Остановлен";
+            Bot.StopTrade();
+        }
+
+        public void printLog(string str)
+        {
+            richTextBoxLog.Text += str;
+            richTextBoxLog.SelectionStart = richTextBoxLog.TextLength;
+            richTextBoxLog.ScrollToCaret();
+        }
+
+        private void textBoxSecret_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

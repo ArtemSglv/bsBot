@@ -67,7 +67,7 @@ namespace bsBot
             }
             resp = resp.Replace("return", "returnInfo");
             YobitTradeInfo info = JsonConvert.DeserializeObject<YobitTradeInfo>(resp);
-            curBalance = info.returnInfo.funds_incl_orders;
+            //curBalance = info.returnInfo.funds_incl_orders;
 
             return DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff") + " Order Type: " + type.ToString() + " Order ID: " + info.returnInfo.order_id
                 + " Price: " + rate.ToString("F8", CultureInfo.InvariantCulture) + " Received: " + info.returnInfo.received + " Remains: " + info.returnInfo.remains + "\n";
@@ -81,7 +81,7 @@ namespace bsBot
             resp = resp.Replace("return", "returnInfo");
 
             YobitAccountInfo yAccInfo= JsonConvert.DeserializeObject<YobitAccountInfo>(resp);
-            var res = yAccInfo.returnInfo.funds;
+            var res = yAccInfo.returnInfo.funds_incl_orders;
 
             return res;
         } //private
@@ -112,7 +112,7 @@ namespace bsBot
             if (webRequest != null)
             {
                 webRequest.Method = "POST";
-                webRequest.Timeout = 1000; //20 000
+                webRequest.Timeout = 50000; //20 000
                 webRequest.ContentType = "application/x-www-form-urlencoded";
                 webRequest.Headers.Add("Key", Key);
                 webRequest.Headers.Add("Sign", sign1);
