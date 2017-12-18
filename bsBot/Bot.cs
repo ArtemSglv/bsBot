@@ -24,11 +24,17 @@ namespace bsBot
         sell = 1,
         buy = 0
     }
-    enum Logic
+    enum TypeOper
     {
         Buy = 0,
         Sell = 1,
         Random = 2
+    }
+    enum TypeSpread
+    {
+        Min = 0,
+        Manual = 1,
+        Dynamic = 2
     }
 
     static class Bot
@@ -41,7 +47,8 @@ namespace bsBot
         public static Mutex getBalanceMutex = new Mutex();
         public static choiceExchange mainForm;
         public static double MaxDiffBalance = 0;
-        public static Logic botLogic = Logic.Random;
+        public static TypeOper botTypeOper = TypeOper.Random;
+        public static TypeSpread botTypeSpread = TypeSpread.Min;
 
         static Thread threadTrade;
         //static Thread mainOperTrade;
@@ -50,12 +57,13 @@ namespace bsBot
         static StreamWriter sw;
         static double price = 0;
         static double amount = 0;
+        static double PriceOffset;
         //static object locker = new object();
 
         public static void StartTrade(Thread trd)
         {
             IsStarted = true;
-            threadTrade = new Thread(delegate () { trd.Join(); try { Trade(); } catch { } })
+            threadTrade = new Thread(delegate () { trd.Join(); try { Trade(); } catch (Exception ex) { sw.Write(DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff")+" "+ex.Message+"\n"); } })
             {
                 Name = "Trade",
                 IsBackground = true
@@ -137,12 +145,7 @@ namespace bsBot
             //}
 
         }
-        private static void Notification()
-        {
-            mainForm.Notify();
-            SoundPlayer player = new SoundPlayer("notify.wav");
-            player.Play();
-        }
+
         private static bool CheckBalance()
         {
             GetBalance();
@@ -161,25 +164,30 @@ namespace bsBot
             }
             return false;
         }
+        private static bool CheckPrice()
+        {
+            GetPrice();
+            return currentExchange.price.diff() > currentExchange.min_rate[currentMarket];
+        }
         private static void Trade()
         {
             fs = new FileStream("Log.txt", FileMode.OpenOrCreate);
             fs.Seek(fs.Length, SeekOrigin.Current);
             sw = new StreamWriter(fs);
+            PriceOffset= currentExchange.min_rate[currentMarket];
             do
             {
                 // startBalance already exsist
-                // trade
-                GetPrice();
-                if (currentExchange.price.diff() > currentExchange.min_rate[currentMarket])
+                
+                if (CheckPrice())
                 {
                     //trade
-                    int flag = (int)botLogic <= 1 ? (int)botLogic : rnd.Next(0, 2);
+                    int flag = (int)botTypeOper <= 1 ? (int)botTypeOper : rnd.Next(0, 2);
                     switch (flag)
                     {
                         case 0:
                             {
-                                price = currentExchange.price.bid + currentExchange.min_rate[currentMarket];
+                                price = currentExchange.price.bid + PriceOffset;
                                 amount = GetRandomNumber(orderLimit.min, orderLimit.max + 1);
                                 Trade_oper(TypeOrder.buy, price, amount);
                                 Trade_oper(TypeOrder.sell, price, amount);
@@ -187,7 +195,7 @@ namespace bsBot
                             }
                         case 1:
                             {
-                                price = currentExchange.price.ask - currentExchange.min_rate[currentMarket];
+                                price = currentExchange.price.ask - PriceOffset;
                                 amount = GetRandomNumber(orderLimit.min, orderLimit.max + 1);
                                 Trade_oper(TypeOrder.sell, price, amount);
                                 Trade_oper(TypeOrder.buy, price, amount);
@@ -200,9 +208,14 @@ namespace bsBot
                     {
                         IsStarted = false;
                         mainForm.BotStatus(IsStarted);
-                        Notification();
+                        mainForm.Notify();
                         break;
                     }
+                }
+                else
+                {
+                    mainForm.printLog(DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff") + " Invalid spread\n");
+                    sw.Write(DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff") + " Invalid spread\n");
                 }
 
                 mainForm.ChangeTitle("Пауза...");

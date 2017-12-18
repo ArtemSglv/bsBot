@@ -5,6 +5,7 @@ using System.Net;
 using System.Drawing;
 using System.Linq;
 using System.Globalization;
+using System.Media;
 
 namespace bsBot
 {
@@ -20,9 +21,14 @@ namespace bsBot
         private void choiceExchange_Load(object sender, EventArgs e)
         {
             Text = Title;
-            radioButOnlyBuy.CheckedChanged += radioButton_CheckedChanged;
-            radioButOnlySell.CheckedChanged += radioButton_CheckedChanged;
-            radioButRandLogic.CheckedChanged += radioButton_CheckedChanged;
+            radioButOnlyBuy.CheckedChanged += radioButTypeOper_CheckedChanged;
+            radioButOnlySell.CheckedChanged += radioButTypeOper_CheckedChanged;
+            radioButRandOper.CheckedChanged += radioButTypeOper_CheckedChanged;
+
+            radioButDynamicSpread.CheckedChanged += radioButSpread_CheckedChanged;
+            radioButMinSpread.CheckedChanged += radioButSpread_CheckedChanged;
+            radioButManualSpread.CheckedChanged += radioButSpread_CheckedChanged;
+
             groupKeys.Enabled = false;
             groupSettings.Enabled = false;
             comboWithExchange.Items.AddRange(new[] { "yobit.net", "cryptopia.co.nz" });
@@ -204,26 +210,36 @@ namespace bsBot
         }
         public void Notify()
         {
+            SoundPlayer player = new SoundPlayer("notify.wav");
+            player.Play();
             MessageBox.Show("Предел изменения баланса превышен!");
         }
 
-        private void radioButton_CheckedChanged(object sender, EventArgs e)
+        private void radioButTypeOper_CheckedChanged(object sender, EventArgs e)
         {
             RadioButton radioButton = (RadioButton)sender;
             if (radioButton.Checked)
             {
                 switch (Convert.ToInt16(radioButton.Tag))
                 {
-                    case 0: { Bot.botLogic = Logic.Buy; break; }
-                    case 1: { Bot.botLogic = Logic.Sell; break; }
-                    case 2: { Bot.botLogic = Logic.Random; break; }
+                    case 0: { Bot.botTypeOper = TypeOper.Buy; break; }
+                    case 1: { Bot.botTypeOper = TypeOper.Sell; break; }
+                    case 2: { Bot.botTypeOper = TypeOper.Random; break; }
                 }
             }
         }
-
-        private void textBoxSecret_TextChanged(object sender, EventArgs e)
+        private void radioButSpread_CheckedChanged(object sender, EventArgs e)
         {
-
+            RadioButton radioButton = (RadioButton)sender;
+            if (radioButton.Checked)
+            {
+                switch (Convert.ToInt16(radioButton.Tag))
+                {
+                    case 0: { Bot.botTypeSpread = TypeSpread.Min; break; }
+                    case 1: { Bot.botTypeSpread = TypeSpread.Manual; break; }
+                    case 2: { Bot.botTypeSpread = TypeSpread.Dynamic; break; }
+                }
+            }
         }
     }
 }

@@ -117,7 +117,7 @@ namespace bsBot
             if (webRequest != null)
             {
                 webRequest.Method = "POST";
-                webRequest.Timeout = 50000; //20 000
+                webRequest.Timeout = 20000; //20 000
                 webRequest.ContentType = "application/x-www-form-urlencoded";
                 webRequest.Headers.Add("Key", Key);
                 webRequest.Headers.Add("Sign", sign1);
