@@ -12,6 +12,7 @@ namespace bsBot
     public partial class choiceExchange : Form
     {
         private const string Title = "Trade Bot [Готово]";
+        Thread trd_markets = null;
 
         public choiceExchange()
         {
@@ -48,12 +49,14 @@ namespace bsBot
             }
 
             // загрузка доступных маркетов в отдельном потоке
-            Thread trd = new Thread(delegate () { GetMarketsInOtherThread(); })
+            if (trd_markets != null && trd_markets.IsAlive)
+                trd_markets.Abort();
+            trd_markets = new Thread(delegate () { GetMarketsInOtherThread(); })
             {
                 Name = "Download markets",
                 IsBackground = true
             };
-            trd.Start();
+            trd_markets.Start();
 
             //trd.Join();
 
@@ -95,6 +98,7 @@ namespace bsBot
 
             Invoke(new Action(() =>
             {
+                comboBoxMarkets.Items.Clear();
                 comboBoxMarkets.Items.AddRange(Bot.currentExchange.AvailableMarkets.ToArray());
 
                 // set enable groupSettings
@@ -114,10 +118,10 @@ namespace bsBot
             }
             catch (WebException wex)
             {
-                MessageBox.Show(wex.Message);
-                //printLog("Get start balance "+DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff") + " " + wex.Message + "\n");
-                Application.Exit();
-                return;
+                //MessageBox.Show(wex.Message);
+                printLog(DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff") + " " + wex.Message + "\n");
+                //Application.Exit();
+                //return;
             }
 
             ChangeTitle();
@@ -137,7 +141,8 @@ namespace bsBot
                 trd.IsBackground = true;
                 trd.Start();
 
-                if (!Bot.IsStarted && comboBoxMarkets.SelectedIndex != -1 && Controls.OfType<TextBox>().All(tb => { return tb.Text != string.Empty; }))
+
+                if (comboBoxMarkets.SelectedIndex != -1 && Controls.OfType<TextBox>().All(tb => { return tb.Text != string.Empty; }))
                 {
                     Bot.currentMarket = comboBoxMarkets.SelectedItem.ToString();
 
@@ -210,9 +215,13 @@ namespace bsBot
         }
         public void Notify()
         {
-            SoundPlayer player = new SoundPlayer("notify.wav");
-            player.Play();
-            MessageBox.Show("Предел изменения баланса превышен!");
+            if (checkSoundNotify.Checked)
+            {
+                SoundPlayer player = new SoundPlayer("notify.wav");
+                player.Play();
+            }
+            new BalanceError().ShowDialog();
+            Focus();
         }
 
         private void radioButTypeOper_CheckedChanged(object sender, EventArgs e)

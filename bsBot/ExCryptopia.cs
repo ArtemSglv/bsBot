@@ -29,6 +29,7 @@ namespace bsBot
             publicAPI = "https://www.cryptopia.co.nz/Api/";
             tradeAPI = "https://www.cryptopia.co.nz/Api/";
             min_rate = new Dictionary<string, double>();
+            WebRequest.DefaultWebProxy = null;
             //key abae36b2f2954405aea5505b99b4c000 secret dgWT333d6TfRslCO4BlYow7xq9ytW7zV/Xd3xniAc1w=
         }
         public override Dictionary<string, double> GetBalance(string pair, int nonce) //private
@@ -122,8 +123,10 @@ namespace bsBot
             // Create Request
             var request = (HttpWebRequest)WebRequest.Create(tradeAPI + method);
             request.Method = "POST";
+            request.Timeout = 20000;
             request.ContentType = "application/json; charset=utf-8";
             request.ContentLength = inputBytes.Length;
+            request.Proxy = null;
 
             //Creating the raw signature string
             var signature = Encoding.UTF8.GetBytes(string.Concat(Key, "POST", HttpUtility.UrlEncode(request.RequestUri.AbsoluteUri.ToLower()), nonce, requestContentBase64String));

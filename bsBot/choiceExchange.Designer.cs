@@ -38,6 +38,10 @@
             this.textBoxKey = new System.Windows.Forms.TextBox();
             this.labelKey = new System.Windows.Forms.Label();
             this.groupSettings = new System.Windows.Forms.GroupBox();
+            this.groupBoxSpread = new System.Windows.Forms.GroupBox();
+            this.radioButDynamicSpread = new System.Windows.Forms.RadioButton();
+            this.radioButManualSpread = new System.Windows.Forms.RadioButton();
+            this.radioButMinSpread = new System.Windows.Forms.RadioButton();
             this.groupTypeOper = new System.Windows.Forms.GroupBox();
             this.radioButRandOper = new System.Windows.Forms.RadioButton();
             this.radioButOnlySell = new System.Windows.Forms.RadioButton();
@@ -61,16 +65,13 @@
             this.comboBoxMarkets = new System.Windows.Forms.ComboBox();
             this.richTextBoxLog = new System.Windows.Forms.RichTextBox();
             this.groupLog = new System.Windows.Forms.GroupBox();
-            this.groupBoxSpread = new System.Windows.Forms.GroupBox();
-            this.radioButDynamicSpread = new System.Windows.Forms.RadioButton();
-            this.radioButManualSpread = new System.Windows.Forms.RadioButton();
-            this.radioButMinSpread = new System.Windows.Forms.RadioButton();
+            this.checkSoundNotify = new System.Windows.Forms.CheckBox();
             this.groupChoiceExchange.SuspendLayout();
             this.groupKeys.SuspendLayout();
             this.groupSettings.SuspendLayout();
+            this.groupBoxSpread.SuspendLayout();
             this.groupTypeOper.SuspendLayout();
             this.groupLog.SuspendLayout();
-            this.groupBoxSpread.SuspendLayout();
             this.SuspendLayout();
             // 
             // comboWithExchange
@@ -121,7 +122,7 @@
             this.textBoxSecret.Name = "textBoxSecret";
             this.textBoxSecret.Size = new System.Drawing.Size(302, 22);
             this.textBoxSecret.TabIndex = 1;
-            this.textBoxSecret.Text = "a3b9830e85af2ab6ccbcb25233785e75";
+            this.textBoxSecret.Text = "32ac491e2219dcfc8419b3734500a973";
             // 
             // labelSecret
             // 
@@ -139,7 +140,7 @@
             this.textBoxKey.Name = "textBoxKey";
             this.textBoxKey.Size = new System.Drawing.Size(302, 22);
             this.textBoxKey.TabIndex = 0;
-            this.textBoxKey.Text = "8FB2D862C2FAAAA6259CFA79D5F15649";
+            this.textBoxKey.Text = "08266F981C6CA843810C84CDA68CD271";
             // 
             // labelKey
             // 
@@ -153,6 +154,7 @@
             // 
             // groupSettings
             // 
+            this.groupSettings.Controls.Add(this.checkSoundNotify);
             this.groupSettings.Controls.Add(this.groupBoxSpread);
             this.groupSettings.Controls.Add(this.groupTypeOper);
             this.groupSettings.Controls.Add(this.textBoxMaxDiffBalance);
@@ -178,15 +180,63 @@
             this.groupSettings.TabIndex = 4;
             this.groupSettings.TabStop = false;
             // 
+            // groupBoxSpread
+            // 
+            this.groupBoxSpread.Controls.Add(this.radioButDynamicSpread);
+            this.groupBoxSpread.Controls.Add(this.radioButManualSpread);
+            this.groupBoxSpread.Controls.Add(this.radioButMinSpread);
+            this.groupBoxSpread.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.groupBoxSpread.Location = new System.Drawing.Point(414, 14);
+            this.groupBoxSpread.Name = "groupBoxSpread";
+            this.groupBoxSpread.Size = new System.Drawing.Size(212, 121);
+            this.groupBoxSpread.TabIndex = 16;
+            this.groupBoxSpread.TabStop = false;
+            this.groupBoxSpread.Text = "Спред";
+            // 
+            // radioButDynamicSpread
+            // 
+            this.radioButDynamicSpread.AutoSize = true;
+            this.radioButDynamicSpread.Location = new System.Drawing.Point(13, 86);
+            this.radioButDynamicSpread.Name = "radioButDynamicSpread";
+            this.radioButDynamicSpread.Size = new System.Drawing.Size(179, 24);
+            this.radioButDynamicSpread.TabIndex = 2;
+            this.radioButDynamicSpread.Tag = "2";
+            this.radioButDynamicSpread.Text = "Динамический(/2)";
+            this.radioButDynamicSpread.UseVisualStyleBackColor = true;
+            // 
+            // radioButManualSpread
+            // 
+            this.radioButManualSpread.AutoSize = true;
+            this.radioButManualSpread.Location = new System.Drawing.Point(13, 56);
+            this.radioButManualSpread.Name = "radioButManualSpread";
+            this.radioButManualSpread.Size = new System.Drawing.Size(89, 24);
+            this.radioButManualSpread.TabIndex = 1;
+            this.radioButManualSpread.Tag = "1";
+            this.radioButManualSpread.Text = "Ручной";
+            this.radioButManualSpread.UseVisualStyleBackColor = true;
+            // 
+            // radioButMinSpread
+            // 
+            this.radioButMinSpread.AutoSize = true;
+            this.radioButMinSpread.Checked = true;
+            this.radioButMinSpread.Location = new System.Drawing.Point(13, 26);
+            this.radioButMinSpread.Name = "radioButMinSpread";
+            this.radioButMinSpread.Size = new System.Drawing.Size(124, 24);
+            this.radioButMinSpread.TabIndex = 0;
+            this.radioButMinSpread.TabStop = true;
+            this.radioButMinSpread.Tag = "0";
+            this.radioButMinSpread.Text = "Мин. спред";
+            this.radioButMinSpread.UseVisualStyleBackColor = true;
+            // 
             // groupTypeOper
             // 
             this.groupTypeOper.Controls.Add(this.radioButRandOper);
             this.groupTypeOper.Controls.Add(this.radioButOnlySell);
             this.groupTypeOper.Controls.Add(this.radioButOnlyBuy);
             this.groupTypeOper.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.groupTypeOper.Location = new System.Drawing.Point(269, 76);
+            this.groupTypeOper.Location = new System.Drawing.Point(252, 14);
             this.groupTypeOper.Name = "groupTypeOper";
-            this.groupTypeOper.Size = new System.Drawing.Size(144, 121);
+            this.groupTypeOper.Size = new System.Drawing.Size(156, 121);
             this.groupTypeOper.TabIndex = 15;
             this.groupTypeOper.TabStop = false;
             this.groupTypeOper.Text = "Тип операции";
@@ -228,7 +278,7 @@
             // 
             // textBoxMaxDiffBalance
             // 
-            this.textBoxMaxDiffBalance.Location = new System.Drawing.Point(350, 36);
+            this.textBoxMaxDiffBalance.Location = new System.Drawing.Point(333, 168);
             this.textBoxMaxDiffBalance.Name = "textBoxMaxDiffBalance";
             this.textBoxMaxDiffBalance.Size = new System.Drawing.Size(85, 22);
             this.textBoxMaxDiffBalance.TabIndex = 13;
@@ -238,7 +288,7 @@
             this.labelMaxDiffBalance.AutoSize = true;
             this.labelMaxDiffBalance.BackColor = System.Drawing.Color.Transparent;
             this.labelMaxDiffBalance.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.labelMaxDiffBalance.Location = new System.Drawing.Point(265, 14);
+            this.labelMaxDiffBalance.Location = new System.Drawing.Point(248, 146);
             this.labelMaxDiffBalance.Name = "labelMaxDiffBalance";
             this.labelMaxDiffBalance.Size = new System.Drawing.Size(170, 40);
             this.labelMaxDiffBalance.TabIndex = 14;
@@ -408,53 +458,18 @@
             this.groupLog.TabStop = false;
             this.groupLog.Text = "Статистика";
             // 
-            // groupBoxSpread
+            // checkSoundNotify
             // 
-            this.groupBoxSpread.Controls.Add(this.radioButDynamicSpread);
-            this.groupBoxSpread.Controls.Add(this.radioButManualSpread);
-            this.groupBoxSpread.Controls.Add(this.radioButMinSpread);
-            this.groupBoxSpread.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.groupBoxSpread.Location = new System.Drawing.Point(419, 76);
-            this.groupBoxSpread.Name = "groupBoxSpread";
-            this.groupBoxSpread.Size = new System.Drawing.Size(187, 121);
-            this.groupBoxSpread.TabIndex = 16;
-            this.groupBoxSpread.TabStop = false;
-            this.groupBoxSpread.Text = "Спред";
-            // 
-            // radioButDynamicSpread
-            // 
-            this.radioButDynamicSpread.AutoSize = true;
-            this.radioButDynamicSpread.Location = new System.Drawing.Point(13, 86);
-            this.radioButDynamicSpread.Name = "radioButDynamicSpread";
-            this.radioButDynamicSpread.Size = new System.Drawing.Size(174, 24);
-            this.radioButDynamicSpread.TabIndex = 2;
-            this.radioButDynamicSpread.Tag = "2";
-            this.radioButDynamicSpread.Text = "Динамический(2)";
-            this.radioButDynamicSpread.UseVisualStyleBackColor = true;
-            // 
-            // radioButManualSpread
-            // 
-            this.radioButManualSpread.AutoSize = true;
-            this.radioButManualSpread.Location = new System.Drawing.Point(13, 56);
-            this.radioButManualSpread.Name = "radioButManualSpread";
-            this.radioButManualSpread.Size = new System.Drawing.Size(89, 24);
-            this.radioButManualSpread.TabIndex = 1;
-            this.radioButManualSpread.Tag = "1";
-            this.radioButManualSpread.Text = "Ручной";
-            this.radioButManualSpread.UseVisualStyleBackColor = true;
-            // 
-            // radioButMinSpread
-            // 
-            this.radioButMinSpread.AutoSize = true;
-            this.radioButMinSpread.Checked = true;
-            this.radioButMinSpread.Location = new System.Drawing.Point(13, 26);
-            this.radioButMinSpread.Name = "radioButMinSpread";
-            this.radioButMinSpread.Size = new System.Drawing.Size(124, 24);
-            this.radioButMinSpread.TabIndex = 0;
-            this.radioButMinSpread.TabStop = true;
-            this.radioButMinSpread.Tag = "0";
-            this.radioButMinSpread.Text = "Мин. спред";
-            this.radioButMinSpread.UseVisualStyleBackColor = true;
+            this.checkSoundNotify.AutoSize = true;
+            this.checkSoundNotify.Checked = true;
+            this.checkSoundNotify.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkSoundNotify.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.checkSoundNotify.Location = new System.Drawing.Point(252, 196);
+            this.checkSoundNotify.Name = "checkSoundNotify";
+            this.checkSoundNotify.Size = new System.Drawing.Size(227, 24);
+            this.checkSoundNotify.TabIndex = 17;
+            this.checkSoundNotify.Text = "Звуковое уведомление";
+            this.checkSoundNotify.UseVisualStyleBackColor = true;
             // 
             // choiceExchange
             // 
@@ -478,11 +493,11 @@
             this.groupKeys.PerformLayout();
             this.groupSettings.ResumeLayout(false);
             this.groupSettings.PerformLayout();
+            this.groupBoxSpread.ResumeLayout(false);
+            this.groupBoxSpread.PerformLayout();
             this.groupTypeOper.ResumeLayout(false);
             this.groupTypeOper.PerformLayout();
             this.groupLog.ResumeLayout(false);
-            this.groupBoxSpread.ResumeLayout(false);
-            this.groupBoxSpread.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -525,6 +540,7 @@
         private System.Windows.Forms.RadioButton radioButDynamicSpread;
         private System.Windows.Forms.RadioButton radioButManualSpread;
         private System.Windows.Forms.RadioButton radioButMinSpread;
+        private System.Windows.Forms.CheckBox checkSoundNotify;
     }
 }
 

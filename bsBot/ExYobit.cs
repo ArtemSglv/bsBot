@@ -16,6 +16,7 @@ namespace bsBot
             publicAPI = "https://yobit.net/api/3/";
             tradeAPI = "https://yobit.net/tapi/";
             min_rate = new Dictionary<string, double>();
+            WebRequest.DefaultWebProxy=null;
         }
         public override void GetMarkets()
         {
@@ -121,6 +122,8 @@ namespace bsBot
                 webRequest.ContentType = "application/x-www-form-urlencoded";
                 webRequest.Headers.Add("Key", Key);
                 webRequest.Headers.Add("Sign", sign1);
+                webRequest.Proxy = null;
+                //ServicePointManager.Expect100Continue = false;
 
                 webRequest.ContentLength = parameters.Length;
                 using (var dataStream = webRequest.GetRequestStream())

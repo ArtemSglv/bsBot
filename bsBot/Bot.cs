@@ -58,26 +58,42 @@ namespace bsBot
         static double price = 0;
         static double amount = 0;
         static double PriceOffset;
-        //static object locker = new object();
+        static object locker = new object();
 
         public static void StartTrade(Thread trd)
         {
-            IsStarted = true;
-            threadTrade = new Thread(delegate () { trd.Join(); try { Trade(); } catch (Exception ex) { sw.Write(DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff")+" "+ex.Message+"\n"); } })
+            if (!IsStarted)
             {
-                Name = "Trade",
-                IsBackground = true
-            }; // пустой catch ОЧЕНЬ ПЛОХО!!
-            threadTrade.Start();
+                IsStarted = true;
+                threadTrade = new Thread(delegate ()
+                {
+                    trd.Join();
+                    try { Trade(); }
+                    catch (Exception ex)
+                    {
+                        sw.Write(DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff") + " " + ex.Message + "\n");
+                        sw.Close();
+                        fs.Close();
+                    }
+                })
+                {
+                    Name = "Trade",
+                    IsBackground = true
+                }; // пустой catch ОЧЕНЬ ПЛОХО!!
+                threadTrade.Start();
+            }
         }
         public static void StopTrade()
         {
-            IsStarted = false;
-            //mainOperTrade.Abort();
-            threadTrade.Abort();
-            sw.Close();
-            fs.Close();
-            mainForm.ChangeTitle();
+            if (IsStarted)
+            {
+                IsStarted = false;
+                //mainOperTrade.Abort();
+                threadTrade.Abort();
+                sw.Close();
+                fs.Close();
+                mainForm.ChangeTitle();
+            }
         }
         public static void GetMarkets()
         {
@@ -125,7 +141,8 @@ namespace bsBot
             string str = string.Empty;
             try
             {
-                str = currentExchange.Trade(type, currentMarket, price, amount, GetNonce());
+                lock (locker)
+                    str = currentExchange.Trade(type, currentMarket, price, amount, GetNonce());
 
             }
             catch (WebException wex)
@@ -174,11 +191,13 @@ namespace bsBot
             fs = new FileStream("Log.txt", FileMode.OpenOrCreate);
             fs.Seek(fs.Length, SeekOrigin.Current);
             sw = new StreamWriter(fs);
-            PriceOffset= currentExchange.min_rate[currentMarket];
+            PriceOffset = currentExchange.min_rate[currentMarket];
+            Thread trd1 = null;
+            Thread trd2 = null;
             do
             {
                 // startBalance already exsist
-                
+
                 if (CheckPrice())
                 {
                     //trade
@@ -189,22 +208,32 @@ namespace bsBot
                             {
                                 price = currentExchange.price.bid + PriceOffset;
                                 amount = GetRandomNumber(orderLimit.min, orderLimit.max + 1);
-                                Trade_oper(TypeOrder.buy, price, amount);
-                                Trade_oper(TypeOrder.sell, price, amount);
+                                trd1 = new Thread(delegate () { Trade_oper(TypeOrder.buy, price, amount); }) { Name = "Thread Buy 1" };
+                                trd2 = new Thread(delegate () { Trade_oper(TypeOrder.sell, price, amount); }) { Name = "Thread Sell 2" };
+                                trd1.Start();
+                                trd2.Start();
+                                //Trade_oper(TypeOrder.sell, price, amount);
                                 break;
                             }
                         case 1:
                             {
                                 price = currentExchange.price.ask - PriceOffset;
                                 amount = GetRandomNumber(orderLimit.min, orderLimit.max + 1);
-                                Trade_oper(TypeOrder.sell, price, amount);
-                                Trade_oper(TypeOrder.buy, price, amount);
+                                trd1 = new Thread(delegate () { Trade_oper(TypeOrder.sell, price, amount); }) { Name = "Thread Sell 1" };
+                                trd2 = new Thread(delegate () { Trade_oper(TypeOrder.buy, price, amount); }) { Name = "Thread Buy 2" };
+                                trd1.Start();
+                                trd2.Start();
+                                //Trade_oper(TypeOrder.sell, price, amount);
+                                //Trade_oper(TypeOrder.buy, price, amount);
                                 break;
                             }
                     }
 
+                    trd1.Join();
+                    trd2.Join();
+
                     // if balance is not norm then stop trade
-                    if (CheckBalance()) //true if diff   
+                    if (CheckBalance()) //true if diff   CheckBalance()
                     {
                         IsStarted = false;
                         mainForm.BotStatus(IsStarted);
