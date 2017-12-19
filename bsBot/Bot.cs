@@ -30,7 +30,7 @@ namespace bsBot
         Sell = 1,
         Random = 2
     }
-    enum TypeSpread
+    enum TypePriceOffset
     {
         Min = 0,
         Manual = 1,
@@ -47,8 +47,9 @@ namespace bsBot
         public static Mutex getBalanceMutex = new Mutex();
         public static choiceExchange mainForm;
         public static double MaxDiffBalance = 0;
+        public static double MaxPriceOffset = 0;
         public static TypeOper botTypeOper = TypeOper.Random;
-        public static TypeSpread botTypeSpread = TypeSpread.Min;
+        public static TypePriceOffset botTypePriceOffset = TypePriceOffset.Min;
 
         static Thread threadTrade;
         //static Thread mainOperTrade;
@@ -71,6 +72,7 @@ namespace bsBot
                     try { Trade(); }
                     catch (Exception ex)
                     {
+                        sw = new StreamWriter(fs);
                         sw.Write(DateTime.Now.ToString("dd/MM/yy HH:mm:ss.ffff") + " " + ex.Message + "\n");
                         sw.Close();
                         fs.Close();
@@ -184,14 +186,23 @@ namespace bsBot
         private static bool CheckPrice()
         {
             GetPrice();
+            GetPriceOffset();
             return currentExchange.price.diff() > currentExchange.min_rate[currentMarket];
+        }
+        private static void GetPriceOffset()
+        {
+            switch((int)botTypePriceOffset)
+            {
+                case 0: { PriceOffset = currentExchange.min_rate[currentMarket]; break; }
+                case 1: { PriceOffset = GetRandomNumber(currentExchange.min_rate[currentMarket], MaxPriceOffset); break; }
+                case 2: { PriceOffset = GetRandomNumber(currentExchange.min_rate[currentMarket], Math.Round(currentExchange.price.diff()/2,8) ); break; }
+            }
         }
         private static void Trade()
         {
             fs = new FileStream("Log.txt", FileMode.OpenOrCreate);
             fs.Seek(fs.Length, SeekOrigin.Current);
-            sw = new StreamWriter(fs);
-            PriceOffset = currentExchange.min_rate[currentMarket];
+            sw = new StreamWriter(fs);            
             Thread trd1 = null;
             Thread trd2 = null;
             do
@@ -200,6 +211,7 @@ namespace bsBot
 
                 if (CheckPrice())
                 {
+                    //PriceOffset = currentExchange.min_rate[currentMarket];
                     //trade
                     int flag = (int)botTypeOper <= 1 ? (int)botTypeOper : rnd.Next(0, 2);
                     switch (flag)

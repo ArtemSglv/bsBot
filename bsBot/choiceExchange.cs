@@ -26,9 +26,9 @@ namespace bsBot
             radioButOnlySell.CheckedChanged += radioButTypeOper_CheckedChanged;
             radioButRandOper.CheckedChanged += radioButTypeOper_CheckedChanged;
 
-            radioButDynamicSpread.CheckedChanged += radioButSpread_CheckedChanged;
-            radioButMinSpread.CheckedChanged += radioButSpread_CheckedChanged;
-            radioButManualSpread.CheckedChanged += radioButSpread_CheckedChanged;
+            radioButDynamicOffset.CheckedChanged += radioButSpread_CheckedChanged;
+            radioButMinUnit.CheckedChanged += radioButSpread_CheckedChanged;
+            radioButManualOffset.CheckedChanged += radioButSpread_CheckedChanged;
 
             groupKeys.Enabled = false;
             groupSettings.Enabled = false;
@@ -244,9 +244,9 @@ namespace bsBot
             {
                 switch (Convert.ToInt16(radioButton.Tag))
                 {
-                    case 0: { Bot.botTypeSpread = TypeSpread.Min; break; }
-                    case 1: { Bot.botTypeSpread = TypeSpread.Manual; break; }
-                    case 2: { Bot.botTypeSpread = TypeSpread.Dynamic; break; }
+                    case 0: { Bot.botTypePriceOffset = TypePriceOffset.Min; break; }
+                    case 1: { new MaxPriceOffset().ShowDialog(); Bot.botTypePriceOffset = TypePriceOffset.Manual; break; }
+                    case 2: { Bot.botTypePriceOffset = TypePriceOffset.Dynamic; break; }
                 }
             }
         }
