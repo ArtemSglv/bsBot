@@ -65,6 +65,7 @@
     <Compile Include="Bot.cs" />
     <Compile Include="Exchange.cs" />
     <Compile Include="ExCryptopia.cs" />
+    <Compile Include="ExStocksExchange.cs" />
     <Compile Include="ExYobit.cs" />
     <Compile Include="choiceExchange.cs">
       <SubType>Form</SubType>
