@@ -116,4 +116,25 @@ namespace bsBot
         public object Error { get; set; }
         public ReturnInfo Data { get; set; }
     }
+
+    struct StocksExchangeInfo
+    {
+        public struct pairInfo
+        {
+            public string currency { get; set; }
+            public string partner { get; set; }
+            public string currency_long { get; set; }
+            public string partner_long { get; set; }
+            public double min_order_amount { get; set; }
+            public double min_buy_price { get; set; }
+            public double min_sell_price { get; set; }
+            public double buy_fee_percent { get; set; }
+            public double sell_fee_percent { get; set; }
+            public bool active { get; set; }
+            public double currency_precission { get; set; }
+            public double partner_precission { get; set; }
+            public string market_name { get; set; }
+        }        
+        public List<pairInfo> pairs { get; set; }
+    }
 }
