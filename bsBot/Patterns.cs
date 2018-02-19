@@ -41,7 +41,6 @@ namespace bsBot
         public int success { get; set; }
         public ReturnInfo returnInfo { get; set; }
     }
-
     struct YobitAccountInfo
     {
         public struct ReturnInfo
@@ -136,5 +135,46 @@ namespace bsBot
             public string market_name { get; set; }
         }        
         public List<pairInfo> pairs { get; set; }
+    }
+    struct StocksExchangePrice
+    {
+        public struct Price
+        {
+            public double buy { get; set; }
+            public double sell { get; set; }
+            public string market_name { get; set; }
+            public long updated_time { get; set; }
+            public long server_time { get; set; }
+        }
+
+        public List<Price> price { get; set; }
+    }
+    struct StocksExchangeAccountInfo
+    {
+        public struct ReturnInfo
+        {
+            public string email { get; set; }
+            public string username { get; set; }
+            public object userSessions { get; set; }
+            public Dictionary<string, double> funds { get; set; }
+            public Dictionary<string, double> hold_funds { get; set; }
+            public object wallets_addresses {get; set;}
+            public object publick_key { get; set; }
+            public object Assets_portfolio { get; set; }
+            public int open_orders { get; set; }
+            public long server_time { get; set; }
+        }
+        public int success { get; set; }
+        public ReturnInfo data { get; set; }
+    }
+    struct StocksExchangeTradeInfo
+    {
+        public struct ReturnInfo
+        {
+            public long order_id { get; set; }
+            public Dictionary<string, double> funds { get; set; }
+        }
+        public int success { get; set; }
+        public ReturnInfo data { get; set; }
     }
 }

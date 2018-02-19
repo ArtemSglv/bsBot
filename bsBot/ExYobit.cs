@@ -18,7 +18,7 @@ namespace bsBot
             min_rate = new Dictionary<string, double>();
             WebRequest.DefaultWebProxy=null;
         }
-        public override void GetMarkets()
+        public override void GetMarkets() //public API
         {
             string command = "info";
             YobitInfo yInfo = JsonConvert.DeserializeObject<YobitInfo>(new WebClient().DownloadString(publicAPI + command));
@@ -27,7 +27,7 @@ namespace bsBot
             yInfo.pairs.Keys.ToList().ForEach(k => { min_rate[k] = yInfo.pairs[k].min_price; });
         }
 
-        public override void GetPrice(string market)
+        public override void GetPrice(string market) //Public API
         {
             string command = string.Empty;
             string resp = string.Empty;
@@ -54,7 +54,7 @@ namespace bsBot
 
         }
 
-        public override string Trade(TypeOrder type, string pair, double rate, double amount, int nonce)
+        public override string Trade(TypeOrder type, string pair, double rate, double amount, int nonce) //Private API
         {
             string parameters = $"method=Trade&pair=" + pair +
                 "&type=" + type.ToString() + "&rate=" + rate.ToString("F8", CultureInfo.InvariantCulture) + "&amount=" +
@@ -73,7 +73,7 @@ namespace bsBot
                 + " Price: " + rate.ToString("F8", CultureInfo.InvariantCulture) + " Received: " + info.returnInfo.received + " Remains: " + info.returnInfo.remains + "\n";
         }  //private
 
-        public override Dictionary<string, double> GetBalance(string pair, int nonce)
+        public override Dictionary<string, double> GetBalance(string pair, int nonce) //Private API
         {
             string parameters = $"method=getInfo&nonce=" + nonce;
             string resp = Response(parameters);
@@ -84,7 +84,7 @@ namespace bsBot
             var res = yAccInfo.returnInfo.funds_incl_orders;
 
             return res;
-        } //private
+        }
 
         private string Sign(string parameters, byte[] inputBytes)
         {

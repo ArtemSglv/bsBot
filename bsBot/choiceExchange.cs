@@ -32,7 +32,7 @@ namespace bsBot
 
             groupKeys.Enabled = false;
             groupSettings.Enabled = false;
-            comboWithExchange.Items.AddRange(new[] { "yobit.net", "cryptopia.co.nz" });
+            comboWithExchange.Items.AddRange(new[] { "yobit.net", "cryptopia.co.nz","stocks.exchange" });
             Bot.mainForm = this;
             Focus();
         }
@@ -46,6 +46,7 @@ namespace bsBot
             {
                 case "yobit.net": { Bot.currentExchange = new ExYobit(); break; }
                 case "cryptopia.co.nz": { Bot.currentExchange = new ExCryptopia(); break; }
+                case "stocks.exchange": { Bot.currentExchange = new ExStocksExchange(); break; }
             }
 
             // загрузка доступных маркетов в отдельном потоке
