@@ -134,7 +134,7 @@ namespace bsBot
             public double partner_precission { get; set; }
             public string market_name { get; set; }
         }        
-        public List<pairInfo> pairs { get; set; }
+        //public List<pairInfo> pairs { get; set; }
     }
     struct StocksExchangePrice
     {
@@ -147,7 +147,7 @@ namespace bsBot
             public long server_time { get; set; }
         }
 
-        public List<Price> price { get; set; }
+        //public List<Price> price { get; set; }
     }
     struct StocksExchangeAccountInfo
     {

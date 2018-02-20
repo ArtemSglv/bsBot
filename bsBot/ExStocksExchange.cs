@@ -28,6 +28,7 @@ namespace bsBot
             tradeAPI = "https://stocks.exchange/api2/";
             min_rate = new Dictionary<string, double>();
             WebRequest.DefaultWebProxy = null;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
         }
         public override Dictionary<string, double> GetBalance(string pair, int nonce) //Private API
         {
@@ -44,16 +45,12 @@ namespace bsBot
 
         public override void GetMarkets() //public api
         {
-            string command = "markets";
-            ServicePointManager.ServerCertificateValidationCallback +=
-                delegate (object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
-                {
-                    return true;
-                };
-            StocksExchangeInfo yInfo = JsonConvert.DeserializeObject<StocksExchangeInfo>(new WebClient().DownloadString(publicAPI + command));
-            yInfo.pairs.ForEach(x => { AvailableMarkets.Add(x.market_name); });
+            string command = "markets";            
+            List<StocksExchangeInfo.pairInfo> yInfo = JsonConvert.DeserializeObject<List<StocksExchangeInfo.pairInfo>>(new WebClient().DownloadString(publicAPI + command));
+            AvailableMarkets = new List<string>();
+            yInfo.ForEach(x => { AvailableMarkets.Add(x.market_name); });
             AvailableMarkets.Sort();
-            yInfo.pairs.ForEach(k => { min_rate[k.market_name] = k.min_buy_price; });
+            yInfo.ForEach(k => { min_rate[k.market_name] = k.min_buy_price; });
         }
 
         public override void GetPrice(string market) //Public API
@@ -71,8 +68,8 @@ namespace bsBot
             //resp = resp.Remove(0, resp.IndexOf(":") + 1);
             //resp = resp.Remove(resp.Length - 1, 1);
 
-            StocksExchangePrice prList = JsonConvert.DeserializeObject<StocksExchangePrice>(resp);
-            var pr = prList.price.Find(x => x.market_name.Equals(market));
+            List<StocksExchangePrice.Price> prList = JsonConvert.DeserializeObject<List<StocksExchangePrice.Price>>(resp);
+            var pr = prList.Find(x => x.market_name.Equals(market));
 
             // if (pr. != null && pr.asks != null && pr.bids.Count > 0 && pr.asks.Count > 0 && pr.bids[0].Count > 0 && pr.asks[0].Count > 0)
             //{
@@ -130,7 +127,8 @@ namespace bsBot
             string jsonResponse = string.Empty;
             string address = $"{tradeAPI}";
 
-            string postData = HttpUtility.UrlEncode(JsonConvert.SerializeObject(postObj));
+            //string postData = HttpUtility.UrlEncode(postObj.ToString());
+            string postData = "method=Getinfo&nonce=1548";
 
             byte[] inputBytes = Encoding.UTF8.GetBytes(postData);
 
@@ -141,9 +139,10 @@ namespace bsBot
             {
                 webRequest.Method = "POST";
                 webRequest.Timeout = 20000; //20 000
-                webRequest.ContentType = "application/x-www-form-urlencoded";
-                webRequest.Headers.Add("Key", Key);
+                //webRequest.ContentType = "application/x-www-form-urlencoded";
                 webRequest.Headers.Add("Sign", sign1);
+                webRequest.Headers.Add("Key", Key);
+                
                 webRequest.Proxy = null;
                 //ServicePointManager.Expect100Continue = false;
 

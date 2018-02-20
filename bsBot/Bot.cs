@@ -187,7 +187,8 @@ namespace bsBot
         {
             GetPrice();
             GetPriceOffset();
-            return currentExchange.price.diff() > currentExchange.min_rate[currentMarket];
+            bool res = currentExchange.price.diff() > currentExchange.min_rate[currentMarket];
+            return res;
         }
         private static void GetPriceOffset()
         {
